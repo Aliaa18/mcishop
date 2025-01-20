@@ -10,7 +10,7 @@ const bootstrap = (app) => {
 
 	app.use(morgan('dev'))
 
-	app.use('/api/v1', v1Router)
+	app.use('/', v1Router)
 
 	app.all('*', (req, res, next) => {
 		throw new AppError('Route not found', 404)
