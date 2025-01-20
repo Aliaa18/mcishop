@@ -9,12 +9,17 @@ const bootstrap = (app) => {
 	app.use(express.json())
 
 	app.use(morgan('dev'))
-
-	app.use('/', v1Router)
+     app.get('/' , (req, res, next) => {
+		return res.status(200 ).json({
+			message:"welcome"
+		})
+	} )
+	app.use('/api/v1', v1Router)
 
 	app.all('*', (req, res, next) => {
 		throw new AppError('Route not found', 404)
 	})
+
 
 	app.use((err, req, res, next) => {
 		const { message, status, stack } = err
