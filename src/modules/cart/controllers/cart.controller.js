@@ -152,15 +152,15 @@ export const applyCoupon = catchAsyncError(async (req, res) => {
 export const checkOutMail = catchAsyncError(async (req, res) => {
 	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
       let arr_ele = []
-         console.log(cart.user_id.companyName);
+         const x= cart.user_id.companyName
          
       arr_ele = cart.products.map(( ele , i)=>( ele.product_id.title ))
-	  transporter.sendMail({
+	  transporter.sendMail({  
 		 from:req.user.email,
 		 to:"aliaahamdy06@gmail.com",
 		 subject: 'Cart Checkout',
 		 text: `customer  ${req.user.email} from ${cart.user_id.companyName} company want to make order with this products: { ${arr_ele} }`,
 	})
 
-	res.status(201).json({ message: 'The email sent to Mci-sales successfully, we will contact you soon!'    })
+	res.status(201).json({ message: 'The email sent to Mci-sales successfully, we will contact you soon!'  , arr_ele , x  })
 })
