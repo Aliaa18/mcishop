@@ -6,14 +6,14 @@ import dotenv from 'dotenv'
 dotenv.config()
 export const getCart = catchAsyncError(async (req, res) => {
 	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
-	res.json({ cart , status:"success"})
+     const x = cart.user_id.companyName
+	res.json({ cart, x , status:"success" })
 })
 
 export const addToCart = catchAsyncError(async (req, res) => {
 	const { product_id } = req.body
 	const cart = await cartModel.findOne({ user_id: req.user.id })
               
-			  
 	const productEntry = cart.products.find(
 		(entry) => entry.product_id._id.toString() === product_id
 	)
@@ -152,14 +152,13 @@ export const applyCoupon = catchAsyncError(async (req, res) => {
 export const checkOutMail = catchAsyncError(async (req, res) => {
 	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
       let arr_ele = []
-      console.log(req.user);
       
       arr_ele = cart.products.map(( ele , i)=>( ele.product_id.title ))
 	  transporter.sendMail({
 		 from:req.user.email,
 		 to:process.env.EMAIL,
 		 subject: 'Cart Checkout',
-		 text: `customer  ${req.user.email} want to make order with this products: { ${arr_ele} }`,
+		 text: `customer  ${req.user.email} from ${req.user.companyName} company want to make order with this products: { ${arr_ele} }`,
 	})
 
 	res.status(201).json({ message: 'The email sent to Mci-sales successfully, we will contact you soon!' , arr_ele   })
