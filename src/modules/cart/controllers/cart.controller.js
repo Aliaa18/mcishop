@@ -157,7 +157,7 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
       arr_ele = cart.products.map(( ele , i)=>( ele.product_id.title ))
 	  transporter.sendMail({
 		 from:req.user.email,
-		 to:"aliaasultan75@gmail.com",
+		 to:"aliaahamdy06@gmail.com",
 		 subject: 'Cart Checkout',
 		 text: `customer  ${req.user.email} from ${cart.user_id.companyName} company want to make order with this products: { ${arr_ele} }`,
 	})
