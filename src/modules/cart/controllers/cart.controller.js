@@ -162,5 +162,5 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
 		 text: `customer  ${req.user.email} from ${cart.user_id.companyName} company want to make order with this products: { ${arr_ele} }`,
 	})
 
-	res.status(201).json({ message: 'The email sent to Mci-sales successfully, we will contact you soon!' , arr_ele   })
+	res.status(201).json({ message: 'The email sent to Mci-sales successfully, we will contact you soon!'    })
 })
