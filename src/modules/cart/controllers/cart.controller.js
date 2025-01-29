@@ -155,12 +155,12 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
          console.log(cart.user_id.companyName);
          
       arr_ele = cart.products.map(( ele , i)=>( ele.product_id.title ))
-	//   transporter.sendMail({
-	// 	 from:req.user.email,
-	// 	 to:process.env.EMAIL,
-	// 	 subject: 'Cart Checkout',
-	// 	 text: `customer  ${req.user.email} from ${cart.user_id.companyName} company want to make order with this products: { ${arr_ele} }`,
-	// })
+	  transporter.sendMail({
+		 from:req.user.email,
+		 to:"aliaasultan75@gmail.com",
+		 subject: 'Cart Checkout',
+		 text: `customer  ${req.user.email} from ${cart.user_id.companyName} company want to make order with this products: { ${arr_ele} }`,
+	})
 
 	res.status(201).json({ message: 'The email sent to Mci-sales successfully, we will contact you soon!' , arr_ele   })
 })
