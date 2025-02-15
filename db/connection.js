@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 export const connectToDb = () =>{
-    mongoose.connect(process.env.URI_ONLINE)
-    .then(()=>console.log(`db connected on URI ${process.env.URI_ONLINE}...`));
+    const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/yourLocalDB';
+    mongoose.connect(mongoURI , {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
+    .then(()=>console.log(`db connected on URI ${mongoURI}...`));
     
 }
