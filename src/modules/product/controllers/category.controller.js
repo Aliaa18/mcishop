@@ -1,6 +1,5 @@
 import { ApiFeatures } from '../../../utils/apiFeatures.js'
 import { catchAsyncError } from '../../../utils/error.handler.js'
-import { makeImage } from '../../image/utils/image.utils.js'
 import categoryModel from '../models/category.model.js'
 
 export const getCategory = catchAsyncError(async (req, res) => {

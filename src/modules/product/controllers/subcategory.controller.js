@@ -34,6 +34,8 @@ export const addSubcategory = catchAsyncError(async (req, res) => {
 		...req.body,
 		category_id: category._id,
 	})
+	category.subcategories.push(subcategory._id)
+	await category.save()
 	res.status(201).json({ subcategory })
 })
 
