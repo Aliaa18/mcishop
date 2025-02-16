@@ -42,7 +42,7 @@ subcategorySchema.pre(/update/i, function (next) {
 	next()
 })
 subcategorySchema.pre(/delete/i, async function (next) {
-	const toBeDeleted = await brandModel.findOne(this._conditions)
+	const toBeDeleted = await subcategoryModel.findOne(this._conditions)
 	if (!toBeDeleted) return next()
 	await mongoose.model('product').findByIdAndDelete(toBeDeleted.products)
 	next()
@@ -50,7 +50,7 @@ subcategorySchema.pre(/delete/i, async function (next) {
 
 subcategorySchema.pre(/update/i, async function (next) {
 	if (!this._update.logo) return next()
-	const toBeUpdated = await brandModel.findOne(this._conditions)
+	const toBeUpdated = await subcategoryModel.findOne(this._conditions)
 	if (!toBeUpdated) return next()
 	await mongoose.model('product').findByIdAndDelete(toBeUpdated.products)
 	next()
