@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import slugify from 'slugify'
+import subcategoryModel from './subcategory.model.js'
 
 const productSchema = new mongoose.Schema(
 	{
@@ -60,6 +61,11 @@ const productSchema = new mongoose.Schema(
 		subcategory_id: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'subcategory',
+			
+		},
+		category_id: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'category',
 			
 		},
 		brand_id:{

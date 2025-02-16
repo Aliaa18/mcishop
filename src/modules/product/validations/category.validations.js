@@ -12,7 +12,7 @@ export const addCategorySchema = Joi.object({
 	},
 	params: {},
 	query: {},
-	file: Joi.object().required(),
+	
 })
 
 export const updateCategorySchema = Joi.object({
@@ -21,7 +21,7 @@ export const updateCategorySchema = Joi.object({
 	},
 	params: { categorySlug: Joi.string().required() },
 	query: {},
-	file: Joi.object(),
+	
 })
 
 export const deleteCategorySchema = Joi.object({

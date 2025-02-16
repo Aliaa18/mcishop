@@ -2,8 +2,10 @@ import { ApiFeatures } from '../../../utils/apiFeatures.js'
 import { catchAsyncError } from '../../../utils/error.handler.js'
 import { makeImage } from '../../image/utils/image.utils.js'
 import brandModel from '../models/brand.model.js'
+import categoryModel from '../models/category.model.js'
 import imageOnProductModel from '../models/imageOnProduct.js'
 import productModel from '../models/product.model.js'
+import subcategoryModel from '../models/subcategory.model.js'
 
 export const getProducts = catchAsyncError(async (req, res, next) => {
 	const apiFeature = new ApiFeatures(productModel.find(), req.query)
@@ -22,8 +24,21 @@ export const getProduct = catchAsyncError(async (req, res, next) => {
 })
 
 export const addProductWithImages = catchAsyncError(async (req, res, next) => {
-	const product = await productModel.create(req.body)
-   await brandModel.findByIdAndUpdate(req.body.brand_id, {
+	 const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
+	// console.log( "noww" , subcategory);
+	 if (!subcategory) {
+		throw new Error('Subcategory not found');
+	  }
+	const categoryId = subcategory.category_id;
+	// console.log(categoryId);
+	 const productData = { ...req.body, category_id: categoryId }
+	const product = await productModel.create(productData)
+	subcategory.products.push(product._id);
+    await subcategory.save();
+   const category = await categoryModel.findById(categoryId);
+    category.products.push(product._id)
+	await category.save()
+	await brandModel.findByIdAndUpdate(req.body.brand_id, {
 		$push: { products: product._id },
 	  });
 	if (req.files?.images)
@@ -50,12 +65,12 @@ export const updateProductWithImages = catchAsyncError(
 		const product = await productModel.findOne({
 			slug: req.params.productSlug,
 		})
-			console.log(product);
+			//console.log(product);
 		if (req.files?.images) {
 				
 			await Promise.all(
 				product.images.map(async (image) => {
-					console.log("iam here" , image);
+					//console.log("iam here" , image);
 					
 					try {
 						await imageOnProductModel.findByIdAndDelete(image._id)
@@ -70,12 +85,12 @@ export const updateProductWithImages = catchAsyncError(
 				req.files.images.map(async (file) => {
 					try {
 						const image = await makeImage(file.path)
-						console.log("hello",image)
+						//console.log("hello",image)
 						await imageOnProductModel.create({
 							image_id: image._id,
 							product_id: product._id,
 						})
-						console.log("pro" , product.slug);
+						//console.log("pro" , product.slug);
 						
 					} catch (error) {
 						return next(error)

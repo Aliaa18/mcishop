@@ -18,11 +18,10 @@ const categorySchema = new mongoose.Schema(
 			trim: true,
 			unique: true,
 		},
-		image: {
+		products:[{
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'image',
-			required: true,
-		},
+			ref: 'product',
+		}]
 	},
 	{ timestamps: true }
 )
@@ -38,15 +37,12 @@ categorySchema.pre(/update/i, function (next) {
 	next()
 })
 
-categorySchema.pre(/find/, function (next) {
-	this.populate('image', ['path'])
-	next()
-})
+
 
 categorySchema.pre(/delete/i, async function (next) {
 	const toBeDeletedCategory = await categoryModel.findOne(this._conditions)
 	if (!toBeDeletedCategory) return next()
-	await mongoose.model('image').findByIdAndDelete(toBeDeletedCategory.image)
+	await mongoose.model('product').findByIdAndDelete(toBeDeletedCategory.products)
 	next()
 })
 
@@ -54,7 +50,7 @@ categorySchema.pre(/update/i, async function (next) {
 	if (!this._update.image) return next()
 	const toBeUpdated = await categoryModel.findOne(this._conditions)
 	if (!toBeUpdated) return next()
-	await mongoose.model('image').findByIdAndDelete(toBeUpdated.image)
+	await mongoose.model('product').findByIdAndDelete(toBeUpdated.products)
 	next()
 })
 
