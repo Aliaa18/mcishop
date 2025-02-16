@@ -21,7 +21,11 @@ const categorySchema = new mongoose.Schema(
 		products:[{
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'product',
-		}]
+		}],
+		subcategories:[{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'subcategories',
+		}],
 	},
 	{ timestamps: true }
 )
@@ -43,6 +47,7 @@ categorySchema.pre(/delete/i, async function (next) {
 	const toBeDeletedCategory = await categoryModel.findOne(this._conditions)
 	if (!toBeDeletedCategory) return next()
 	await mongoose.model('product').findByIdAndDelete(toBeDeletedCategory.products)
+	await mongoose.model('subcategory').findByIdAndDelete(toBeDeletedCategory.subcategories)
 	next()
 })
 
@@ -51,6 +56,7 @@ categorySchema.pre(/update/i, async function (next) {
 	const toBeUpdated = await categoryModel.findOne(this._conditions)
 	if (!toBeUpdated) return next()
 	await mongoose.model('product').findByIdAndDelete(toBeUpdated.products)
+	await mongoose.model('subcategory').findByIdAndDelete(toBeUpdated.subcategories)
 	next()
 })
 

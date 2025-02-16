@@ -94,6 +94,8 @@ productSchema.pre('updateMany', function (next) {
 productSchema.pre(/find/, function (next) {
 	this.populate('cover_image')
 	this.populate('brand_id')
+	this.populate('category_id')
+	this.populate('subcategory_id')
 	next()
 })
 
