@@ -7,7 +7,7 @@ export const getCategory = catchAsyncError(async (req, res) => {
 	const category = await categoryModel.findOne({ slug: categorySlug }) .populate({
         path: 'subcategory',
         populate: {
-          path: 'products', // Populate products inside each subcategory
+          path: 'product', // Populate products inside each subcategory
           model: 'product'
         }
       })
