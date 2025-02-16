@@ -18,7 +18,7 @@ export const getCategory = catchAsyncError(async (req, res) => {
 export const getCategories = catchAsyncError(async (req, res) => {
 	const apiFeatures = new ApiFeatures(
 		categoryModel.find() .populate({
-			path: 'subcategories',
+			path: 'subcategory',
 			populate: {
 			  path: 'products', // Populate products inside each subcategory
 			  model: 'product'
