@@ -36,7 +36,7 @@ subcategorySchema.pre('save', function (next) {
 	next()
 })
 subcategorySchema.pre(/find/, function (next) {
-	this.populate('product')
+	this.populate('products')
 	next()
 })
 
