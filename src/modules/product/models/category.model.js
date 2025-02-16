@@ -24,7 +24,7 @@ const categorySchema = new mongoose.Schema(
 		}],
 		subcategories:[{
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'subcategories',
+			ref: 'subcategory',
 		}],
 	},
 	{ timestamps: true }

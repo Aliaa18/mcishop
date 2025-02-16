@@ -5,7 +5,7 @@ import categoryModel from '../models/category.model.js'
 export const getCategory = catchAsyncError(async (req, res) => {
 	const { categorySlug } = req.params
 	const category = await categoryModel.findOne({ slug: categorySlug }) .populate({
-        path: 'subcategories',
+        path: 'subcategory',
         populate: {
           path: 'products', // Populate products inside each subcategory
           model: 'product'
