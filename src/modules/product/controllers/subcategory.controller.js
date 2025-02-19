@@ -16,10 +16,10 @@ export const getSubcategory = catchAsyncError(async (req, res) => {
 
 export const getSubcategories = catchAsyncError(async (req, res) => {
 	const { categorySlug } = req.params
-	const category = await categoryModel.findOne({ slug: categorySlug }).populate('produts')
+	const category = await categoryModel.findOne({ slug: categorySlug })
 	if (!category) res.status(404).json({ message: 'Category not found' })
 	const apiFeatures = new ApiFeatures(
-		subcategoryModel.find({ category_id: category._id }),
+		subcategoryModel.find({ category_id: category._id }).populate('products'),
 		req.query
 	).paginate(10)
 	const subcategories = await apiFeatures.query
