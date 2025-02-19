@@ -16,20 +16,29 @@ export const getCategory = catchAsyncError(async (req, res) => {
 })
 
 export const getCategories = catchAsyncError(async (req, res) => {
-	const apiFeatures = new ApiFeatures(
-		categoryModel.find().populate({
-			path: 'subcategories',
-			populate: {
-				path: 'products', // Populate products inside each subcategory
-				model: 'product'
-			  }
-			
-		  })
-		  .populate('products'),
-		req.query
-	).paginate(10)
-	const categories = await apiFeatures.query
-	res.json({ categories })
+	try {
+		const apiFeatures = new ApiFeatures(
+		  categoryModel.find()
+			.populate({
+			  path: "subcategories",
+			  populate: {
+				path: "products", // Populate products inside each subcategory
+				model: "product",
+			  },
+			})
+			.populate("products"),
+		  req.query
+		);
+	
+		//await apiFeatures.paginate(); // Ensure pagination applies before querying
+	
+		const categories = await apiFeatures.query;
+	
+		res.status(200).json({ success: true, categories });
+	  } catch (error) {
+		console.error("Error fetching categories:", error.message);
+		res.status(500).json({ success: false, message: error.message });
+	  }
 })
 
 export const addCategory = catchAsyncError(async (req, res) => {

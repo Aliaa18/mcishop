@@ -52,7 +52,7 @@ categorySchema.pre(/delete/i, async function (next) {
 })
 
 categorySchema.pre(/update/i, async function (next) {
-	if (!this._update.image) return next()
+	// if (!this._update.image) return next()
 	const toBeUpdated = await categoryModel.findOne(this._conditions)
 	if (!toBeUpdated) return next()
 	await mongoose.model('product').findByIdAndDelete(toBeUpdated.products)
