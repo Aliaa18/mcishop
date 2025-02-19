@@ -17,23 +17,13 @@ export const getCategory = catchAsyncError(async (req, res) => {
 
 export const getCategories = catchAsyncError(async (req, res) => {
 	try {
-		const apiFeatures = new ApiFeatures(
-		  categoryModel.find()
-			.populate({
-			  path: "subcategories",
-			  populate: {
-				path: "products", // Populate products inside each subcategory
-				model: "product",
-			  },
-			})
-			.populate("products"),
-		  req.query
-		);
+const apiFeatures = new ApiFeatures(categoryModel.find().populate('subcategories'),req.query).paginate();
 	
 		//await apiFeatures.paginate(); // Ensure pagination applies before querying
 	
 		const categories = await apiFeatures.query;
-	
+	      console.log("kokok" , categories );
+		  
 		res.status(200).json({ success: true, categories });
 	  } catch (error) {
 		console.error("Error fetching categories:", error.message);

@@ -5,7 +5,7 @@ import subcategoryModel from '../models/subcategory.model.js'
 
 export const getSubcategory = catchAsyncError(async (req, res) => {
 	const { subcategorySlug, categorySlug } = req.params
-	const category = await categoryModel.findOne({ slug: categorySlug })
+	const category = await categoryModel.findOne({ slug: categorySlug }).populate('products')
 	if (!category) res.status(404).json({ message: 'Category not found' })
 	const subcategory = await subcategoryModel.findOne({
 		slug: subcategorySlug,
@@ -16,7 +16,7 @@ export const getSubcategory = catchAsyncError(async (req, res) => {
 
 export const getSubcategories = catchAsyncError(async (req, res) => {
 	const { categorySlug } = req.params
-	const category = await categoryModel.findOne({ slug: categorySlug })
+	const category = await categoryModel.findOne({ slug: categorySlug }).populate('produts')
 	if (!category) res.status(404).json({ message: 'Category not found' })
 	const apiFeatures = new ApiFeatures(
 		subcategoryModel.find({ category_id: category._id }),

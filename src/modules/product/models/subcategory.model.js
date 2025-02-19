@@ -35,10 +35,7 @@ subcategorySchema.pre('save', function (next) {
 	this.slug = slugify(this.name, { lower: true })
 	next()
 })
-subcategorySchema.pre(/find/, function (next) {
-	this.populate('products')
-	next()
-})
+
 
 subcategorySchema.pre(/update/i, function (next) {
 	if (this._update.name)
