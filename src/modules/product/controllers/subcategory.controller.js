@@ -11,6 +11,7 @@ export const getSubcategory = catchAsyncError(async (req, res) => {
 		slug: subcategorySlug,
 		category_id: category._id,
 	}).populate('products')
+	console.log(category);
 	res.json({ subcategory })
 })
 
