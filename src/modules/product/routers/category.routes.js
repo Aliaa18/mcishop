@@ -39,5 +39,6 @@ router
 	.delete(validate(deleteCategorySchema), deleteCategory)
 
 router.use('/:categorySlug/subcategories', subcategoryRouter)
+router.use('/:categorySlug/subcategories/:subcategorySlug', subcategoryRouter)
 
 export default router

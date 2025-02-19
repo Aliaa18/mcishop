@@ -10,7 +10,7 @@ export const getSubcategory = catchAsyncError(async (req, res) => {
 	const subcategory = await subcategoryModel.findOne({
 		slug: subcategorySlug,
 		category_id: category._id,
-	})
+	}).populate('products')
 	res.json({ subcategory })
 })
 

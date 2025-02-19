@@ -4,6 +4,7 @@ import {
 	addSubcategorySchema,
 	deleteSubcategorySchema,
 	getSubcategoriesSchema,
+	getSubcategorySchema,
 	updateSubcategorySchema,
 } from '../validations/subcategory.validations.js'
 import {
@@ -13,6 +14,7 @@ import {
 	getSubcategory,
 	updateSubcategory,
 } from '../controllers/subcategory.controller.js'
+import { getCategorySchema } from '../validations/category.validations.js'
 
 const router = Router({ mergeParams: true })
 
@@ -23,7 +25,7 @@ router
 
 router
 	.route('/:subcategorySlug')
-	.get(validate(getSubcategoriesSchema), getSubcategory)
+	.get(validate(getSubcategorySchema), getSubcategory)
 	.put(validate(updateSubcategorySchema), updateSubcategory)
 	.delete(validate(deleteSubcategorySchema), deleteSubcategory)
 
