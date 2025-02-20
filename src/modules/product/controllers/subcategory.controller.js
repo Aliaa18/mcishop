@@ -5,7 +5,7 @@ import subcategoryModel from '../models/subcategory.model.js'
 
 export const getSubcategory = catchAsyncError(async (req, res) => {
 	const { subcategorySlug, categorySlug } = req.params
-	const category = await categoryModel.findOne({ slug: categorySlug }).populate('products')
+	const category = await categoryModel.findOne({ slug: categorySlug })
 	if (!category) res.status(404).json({ message: 'Category not found' })
 	const subcategory = await subcategoryModel.findOne({
 		slug: subcategorySlug,
