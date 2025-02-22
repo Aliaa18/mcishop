@@ -39,7 +39,7 @@ router
 		updateCategory
 	)
 	.delete(validate(deleteCategorySchema), deleteCategory)
-router.route('/:categoryId/products').get( getProductsByCategory )
+router.route('/:categorySlug/products').get( getCategory )
 router.use('/:categorySlug/subcategories', subcategoryRouter)
 router.use('/:categorySlug/subcategories/:subcategorySlug', subcategoryRouter)
 

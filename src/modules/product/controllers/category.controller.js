@@ -2,18 +2,67 @@ import { ApiFeatures } from '../../../utils/apiFeatures.js'
 import { catchAsyncError } from '../../../utils/error.handler.js'
 import categoryModel from '../models/category.model.js'
 import productModel  from "../models/product.model.js"
+
+// export const getCategory = catchAsyncError(async (req, res) => {
+// 	const { categorySlug } = req.params
+// 	const category = await categoryModel.findOne({ slug: categorySlug }) .populate({
+//         path: 'subcategories',
+//         populate: {
+//           path: 'products', //******populate products inside each subcategory
+//           model: 'product'
+//         }
+//       })
+//       .populate('products');
+// 	res.json({ category })
+// })
+
+
 export const getCategory = catchAsyncError(async (req, res) => {
-	const { categorySlug } = req.params
-	const category = await categoryModel.findOne({ slug: categorySlug }) .populate({
-        path: 'subcategories',
+  const { categorySlug } = req.params;
+  const { search } = req.query;
+
+  // Find the category by slug
+  const category = await categoryModel.findOne({ slug: categorySlug });
+
+  if (!category) {
+    return res.status(404).json({ success: false, message: 'Category not found' });
+  }
+
+  // Initialize match conditions for products
+  let productMatch = { category_id: category._id }; // Ensure products belong to the found category
+
+  // If a search term is provided, add case-insensitive regex filters
+  if (search) {
+    const searchRegex = new RegExp(search, 'i');
+    productMatch = {
+      ...productMatch,
+      $or: [
+        { title: { $regex: searchRegex } },
+        { description: { $regex: searchRegex } },
+        // Assuming subcategory names are stored in the subcategory collection
+        { 'subcategory_id.name': { $regex: searchRegex } }
+      ]
+    };
+  }
+
+  // Populate subcategories and their products based on the match conditions
+  const populatedCategory = await categoryModel.findOne({ slug: categorySlug })
+    .populate({
+      path: 'subcategories',
+      populate: {
+        path: 'products',
+        model: 'product',
+        match: productMatch, // Apply the match conditions to filter products
         populate: {
-          path: 'products', // Populate products inside each subcategory
-          model: 'product'
+          path: 'subcategory_id', // Populate the subcategory field within products
+          select: 'name' // Select only the name field of the subcategory
         }
-      })
-      .populate('products');
-	res.json({ category })
-})
+      }
+    })
+    .populate('products', null, productMatch); // Populate products directly under the category
+
+  res.status(200).json({ success: true, category: populatedCategory });
+});
 
 export const getCategories = catchAsyncError(async (req, res) => {
 	try {
@@ -36,6 +85,7 @@ const apiFeatures = new ApiFeatures(categoryModel.find().populate({
 		res.status(500).json({ success: false, message: error.message });
 	  }
 })
+
 export const getProductsByCategory = catchAsyncError(async (req, res) => {
 	const { categoryId } = req.params;
 
