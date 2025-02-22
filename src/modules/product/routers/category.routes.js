@@ -6,12 +6,14 @@ import {
 	getCategories,
 	getCategory,
 	updateCategory,
+	getProductsByCategory
 } from '../controllers/category.controller.js'
 import {
 	addCategorySchema,
 	deleteCategorySchema,
 	getCategorySchema,
 	updateCategorySchema,
+	getProductsByCategorySchema
 } from '../validations/category.validations.js'
 import subcategoryRouter from './subcategory.routes.js'
 
@@ -37,7 +39,7 @@ router
 		updateCategory
 	)
 	.delete(validate(deleteCategorySchema), deleteCategory)
-
+router.route('/:categoryId/products').get( getProductsByCategory )
 router.use('/:categorySlug/subcategories', subcategoryRouter)
 router.use('/:categorySlug/subcategories/:subcategorySlug', subcategoryRouter)
 

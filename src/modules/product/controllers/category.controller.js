@@ -1,7 +1,7 @@
 import { ApiFeatures } from '../../../utils/apiFeatures.js'
 import { catchAsyncError } from '../../../utils/error.handler.js'
 import categoryModel from '../models/category.model.js'
-
+import productModel  from "../models/product.model.js"
 export const getCategory = catchAsyncError(async (req, res) => {
 	const { categorySlug } = req.params
 	const category = await categoryModel.findOne({ slug: categorySlug }) .populate({
@@ -36,6 +36,19 @@ const apiFeatures = new ApiFeatures(categoryModel.find().populate({
 		res.status(500).json({ success: false, message: error.message });
 	  }
 })
+export const getProductsByCategory = catchAsyncError(async (req, res) => {
+	const { categoryId } = req.params;
+
+	let query = productModel.find({ category_id: categoryId });
+  	const apiFeatures = new ApiFeatures(query, req.query)
+	  .search(['title', 'description']) 
+	const products = await apiFeatures.query
+	  .populate('subcategory_id', 'name') 
+	  .populate('brand_id', 'name');     
+  
+	res.status(200).json({ success: true, products });
+});
+
 
 export const addCategory = catchAsyncError(async (req, res) => {
 	const category = await categoryModel.create(req.body)

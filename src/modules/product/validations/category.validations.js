@@ -1,9 +1,15 @@
 import Joi from 'joi'
 
+
 export const getCategorySchema = Joi.object({
 	body: {},
 	params: { categorySlug: Joi.string().required() },
 	query: {},
+})
+export const getProductsByCategorySchema = Joi.object({
+	body: {},
+	params: {categoryId :Joi.string().hex().length(24).required()},
+	query: {}
 })
 
 export const addCategorySchema = Joi.object({
