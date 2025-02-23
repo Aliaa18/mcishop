@@ -55,6 +55,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 				}
 			})
 		)
+
 	res.status(201).json({
 		message: `Added product with ${req.files.images?.length || 0} images`,
 	})
@@ -62,6 +63,15 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 
 export const updateProductWithImages = catchAsyncError(
 	async (req, res, next) => {
+		const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
+		// console.log( "noww" , subcategory);
+		 if (!subcategory) {
+			throw new Error('Subcategory not found');
+		  }
+		  const categoryId = subcategory.category_id;
+	// console.log(categoryId);
+	 const productData = { ...req.body, category_id: categoryId }
+
 		const product = await productModel.findOne({
 			slug: req.params.productSlug,
 		})
@@ -101,9 +111,16 @@ export const updateProductWithImages = catchAsyncError(
 		
 		await productModel.updateOne(
 			{ slug: req.params.productSlug }, 
-			req.body // Update data
+			productData// Update data
 		);
-		
+		subcategory.products.push(product._id);
+    await subcategory.save();
+   const category = await categoryModel.findById(categoryId);
+    category.products.push(product._id)
+	await category.save()
+	await brandModel.findByIdAndUpdate(req.body.brand_id, {
+		$push: { products: product._id },
+	  });
 			
 		res.json({
 			message: `Updated product with ${
