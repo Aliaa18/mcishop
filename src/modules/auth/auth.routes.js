@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { deleteUser, forgetPassword, getUsers, resetPassword, signin, signup, updateUser, validateEmail } from './auth.controller.js'
+import { deleteUser, forgetPassword,getUser, getUsers, resetPassword, signin, signup, updateUser, validateEmail } from './auth.controller.js'
 import { assertUniqueEmail, authenticate, authorize } from './auth.middlewares.js'
 import { validate } from '../../middlewares/validation.middleware.js'
 import {
@@ -23,7 +23,7 @@ router.post('/resetPassword/:token', validate(resetPasswordSchema), resetPasswor
 router.get('/validate/:token', validate(validateEmailSchema), validateEmail)
 router
 	.route('/:user_id')
-	// .get(getUser)
+	 .get(getUser)
 	.put(
 		validate(updateUserSchema),
 		updateUser
