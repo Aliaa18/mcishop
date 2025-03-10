@@ -34,3 +34,5 @@ export const assertUniqueEmail = catchAsyncError(async (req, res, next) => {
 	if (user) throw new AppError('This email is already taken', 400)
 	next()
 })
+
+
