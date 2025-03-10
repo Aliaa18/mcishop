@@ -9,7 +9,8 @@ export const getBrand = catchAsyncError(async (req, res) => {
 })
 
 export const getBrands = catchAsyncError(async (req, res) => {
-	const apiFeatures = new ApiFeatures(brandModel.find().populate('products'), req.query).paginate()
+	const apiFeatures = new ApiFeatures(brandModel.find().populate('products'), req.query).paginate().fields()
+	.filter()
 	const brands = await apiFeatures.query
 	res.json({ brands })
 })

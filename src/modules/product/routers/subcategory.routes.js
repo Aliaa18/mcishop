@@ -13,16 +13,18 @@ import {
 	getSubcategories,
 	getSubcategory,
 	updateSubcategory,
+	getAllSubcatg
 } from '../controllers/subcategory.controller.js'
 import { getCategorySchema } from '../validations/category.validations.js'
 
 const router = Router({ mergeParams: true })
-
+   
 router
 	.route('/')
 	.get(validate(getSubcategoriesSchema), getSubcategories)
 	.post(validate(addSubcategorySchema), addSubcategory)
-
+ router
+ 
 router
 	.route('/:subcategorySlug')
 	.get(validate(getSubcategorySchema), getSubcategory)

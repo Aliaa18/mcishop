@@ -12,6 +12,15 @@ export const getUserOrders = catchAsyncError(async (req, res) => {
 	res.json({ orders })
     
 })
+export const getUsersOrders = catchAsyncError(async (req, res) => {
+    const apiFeatures=new ApiFeatures(
+        orderModel.find()
+    )
+	const orders = await  apiFeatures.query
+	res.json({ orders })
+    
+})
+
 
 export const makeCODorder = catchAsyncError(async(req,res)=>{
        // 1-cart

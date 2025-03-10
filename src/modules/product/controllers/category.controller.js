@@ -19,8 +19,6 @@ export const getCategory = catchAsyncError(async (req, res) => {
 
 
 
-
-
 export const getCategories = catchAsyncError(async (req, res) => {
 	try {
 const apiFeatures = new ApiFeatures(categoryModel.find().populate({

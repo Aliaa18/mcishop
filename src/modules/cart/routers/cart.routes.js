@@ -9,12 +9,14 @@ import {
 	clearCart,
 	updateCart,
 	checkOutMail,
+	getCarts,
 } from '../controllers/cart.controller.js'
 import { assertCart } from '../middlewares/cart.middleware.js'
 
 const router = Router()
 
 router.route('/').get(authenticate, authorize(ROLES.USER), assertCart, getCart)
+router.route('/all').get(authenticate, authorize(ROLES.ADMIN), assertCart, getCarts)
 router.route('/checkout').get(authenticate, authorize(ROLES.USER), assertCart, checkOutMail)
 router
 	.route('/add')

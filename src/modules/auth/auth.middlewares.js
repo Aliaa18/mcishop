@@ -21,7 +21,9 @@ export const authenticate = (req, res, next) => {
 
 export const authorize = (role) => {
 	return (req, res, next) => {
-		if (role !== req.user.role) throw new AppError('Forbidden', 403)
+		     console.log(req);
+			 
+		if (role !== req.user?.role) throw new AppError('Forbidden', 403)
 		next()
 	}
 }

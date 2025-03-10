@@ -2,12 +2,13 @@ import { Router } from 'express'
 import { authenticate, authorize } from '../../auth/auth.middlewares.js'
 import { ROLES } from '../../../utils/enums.js'
 import { assertCart } from '../middlewares/cart.middleware.js'
-import { getUserOrders , makeCODorder } from '../controllers/orders.controller.js'
+import { getUserOrders , getUsersOrders, makeCODorder } from '../controllers/orders.controller.js'
 import { validate } from '../../../middlewares/validation.middleware.js'
 import { addOrderSchema } from '../validation/orders.validation.js'
 const router = Router()
 
 router.route('/').get(authenticate, authorize(ROLES.USER), getUserOrders)
+router.route('/all').get(authenticate, authorize(ROLES.ADMIN), getUsersOrders)
 
 router
     .route('/cash')

@@ -16,6 +16,7 @@ import {
 	getProductsByCategorySchema
 } from '../validations/category.validations.js'
 import subcategoryRouter from './subcategory.routes.js'
+import { getAllSubcatg } from '../controllers/subcategory.controller.js'
 
 const router = Router()
 
@@ -42,5 +43,7 @@ router
 router.route('/:categorySlug/products').get( getCategory )
 router.use('/:categorySlug/subcategories', subcategoryRouter)
 router.use('/:categorySlug/subcategories/:subcategorySlug', subcategoryRouter)
+
+
 
 export default router

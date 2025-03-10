@@ -8,6 +8,7 @@ import subcategoriesRouter from '../modules/product/routers/subcategory.routes.j
  import cartsRouter from '../modules/cart/routers/cart.routes.js'
  import authRouter from '../modules/auth/auth.routes.js'
  import ordersRouter from '../modules/cart/routers/orders.routes.js'
+ import settingsRouter from '../modules/settings/settings.routes.js'
 const router = Router()
 
 router.use('/categories', categoriesRouter)
@@ -19,6 +20,7 @@ router.use('/subcategories', subcategoriesRouter)
 // router.use('/users', usersRouter)
 router.use('/auth', authRouter)
 router.use('/orders', ordersRouter)
+router.use('/settings', settingsRouter)
 
 
 export default router

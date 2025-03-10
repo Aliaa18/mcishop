@@ -9,6 +9,11 @@ export const getCart = catchAsyncError(async (req, res) => {
     
 	res.json({ cart , status:"success" })
 })
+export const getCarts = catchAsyncError(async (req, res) => {
+	const carts = await cartModel.find().populate('user_id')
+    
+	res.json({ carts , status:"success" })
+})
 
 export const addToCart = catchAsyncError(async (req, res) => {
 	const { product_id } = req.body
@@ -151,13 +156,15 @@ export const applyCoupon = catchAsyncError(async (req, res) => {
 
 export const checkOutMail = catchAsyncError(async (req, res) => {
 	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
-      let arr_ele = []
+      console.log(cart.user_id , req.user);
+      
+  let arr_ele = []
       arr_ele = cart.products.map(( ele , i)=>( ele.product_id.title ))
 	  transporter.sendMail({  
 		 from:req.user.email,
 		 to: process.env.EMAIL,
 		 subject: 'Cart Checkout',
-		 text: `customer  ${req.user.email} from ${cart.user_id.companyName} company want to make order with this products: { ${arr_ele} }`,
+		 text: `customer  ${req.user.email} from " ${cart.user_id.companyName} " company wants to make an order with this products: { ${arr_ele} }`,
 	})
 
 	res.status(201).json({ message: 'The email sent to Mci-sales successfully, we will contact you soon!'  , arr_ele  })

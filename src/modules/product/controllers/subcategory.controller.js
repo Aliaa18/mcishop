@@ -26,6 +26,18 @@ export const getSubcategories = catchAsyncError(async (req, res) => {
 	const subcategories = await apiFeatures.query
 	res.json({ subcategories })
 })
+ export const getAllSubcatg = catchAsyncError(async(req,res)=>{
+	try {
+		const apiFeatures = new ApiFeatures(subcategoryModel.find().populate('products'),req.query).paginate();			
+				const subcategories = await apiFeatures.query;
+				  console.log("kokok" , subcategories );
+				  
+				res.status(200).json({ success: true, subcategories });
+			  } catch (error) {
+				console.error("Error fetching subcategories:", error.message);
+				res.status(500).json({ success: false, message: error.message });
+			  }
+ })
 
 export const addSubcategory = catchAsyncError(async (req, res) => {
 	const { categorySlug } = req.params
