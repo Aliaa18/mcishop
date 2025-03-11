@@ -177,10 +177,10 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
         // return res.status(500).json({ message: 'Email sending failed', error });
       }
       
-
+    const test = req.user.email
     const order = await orderModel.create({user_id : req.user.id ,  products: cart.products.map((p) => ({
       product_id: p.product_id, // IMPORTANT
       quantity: p.quantity
     })) , total_price :total})  
-	res.status(201).json({ message: 'The email sent to Mci-sales successfully, we will contact you soon!'  , arr_ele , order  })
+	res.status(201).json({ test ,message: 'The email sent to Mci-sales successfully , we will contact you soon!'  , arr_ele , order  })
 })
