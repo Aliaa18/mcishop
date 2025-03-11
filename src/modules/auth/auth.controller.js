@@ -96,7 +96,7 @@ export const forgetPassword=catchAsyncError(async(req,res)=>{
     }
 
 	const email_token = jwt.sign({email},process.env.EMAIL_SECRET)
-  const link=`${process.env.FRONTEND_URL}resetPass/${email_token}`
+  const link=`${process.env.FRONTEND_URL}/resetPass/${email_token}`
   await transporter.sendMail({
   from:process.env.EMAIL,
   to:email,
