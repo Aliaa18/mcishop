@@ -3,6 +3,7 @@ import couponModel from '../../coupon/models/coupon.model.js'
 import cartModel from '../models/cart.model.js'
 import transporter from '../../../utils/email.js'
 import dotenv from 'dotenv'
+import orderModel from '../models/order.model.js'
 dotenv.config()
 export const getCart = catchAsyncError(async (req, res) => {
 	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
@@ -157,7 +158,8 @@ export const applyCoupon = catchAsyncError(async (req, res) => {
 export const checkOutMail = catchAsyncError(async (req, res) => {
 	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
       console.log(cart.user_id , req.user);
-      
+     let cartPro = cart.products 
+     let total = cart.total_price 
   let arr_ele = []
       arr_ele = cart.products.map(( ele , i)=>( ele.product_id.title ))
 	  transporter.sendMail({  
@@ -167,5 +169,9 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
 		 text: `customer  ${req.user.email} from " ${cart.user_id.companyName} " company wants to make an order with this products: { ${arr_ele} }`,
 	})
 
-	res.status(201).json({ message: 'The email sent to Mci-sales successfully, we will contact you soon!'  , arr_ele  })
+    const order = await orderModel.create({user_id : req.user.id ,  products: cart.products.map((p) => ({
+      product_id: p.product_id, // IMPORTANT
+      quantity: p.quantity
+    })) , total_price :total})  
+	res.status(201).json({ message: 'The email sent to Mci-sales successfully, we will contact you soon!'  , arr_ele , order  })
 })

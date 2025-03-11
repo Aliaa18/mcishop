@@ -5,10 +5,11 @@ import cartModel from '../models/cart.model.js'
 import productModel from '../../product/models/product.model.js'
 
 export const getUserOrders = catchAsyncError(async (req, res) => {
-    const apiFeatures=new ApiFeatures(
-        orderModel.find({user_id : req.user.id})
-    ).paginate(10)
-	const orders = await  apiFeatures.query
+    // const apiFeatures=new ApiFeatures(
+    //     orderModel.find({user_id : req.user.id})
+    // ).paginate(10)
+     const user_id = req.params.user_id
+	const orders = await  orderModel.find({user_id}).populate('products.product_id')
 	res.json({ orders })
     
 })
@@ -22,52 +23,52 @@ export const getUsersOrders = catchAsyncError(async (req, res) => {
 })
 
 
-export const makeCODorder = catchAsyncError(async(req,res)=>{
-       // 1-cart
-       const cart = await cartModel.findOne({user_id:req.user.id}) 
-        cart.products.forEach((product)=>{
-        if(product.product_id.stock < product.quantity)
-            throw new AppError("insufficient stock" , 400)
-        })
-       // 2-products
+// export const makeCODorder = catchAsyncError(async(req,res)=>{
+//        // 1-cart
+//        const cart = await cartModel.findOne({user_id:req.user.id}) 
+//         cart.products.forEach((product)=>{
+//         if(product.product_id.stock < product.quantity)
+//             throw new AppError("insufficient stock" , 400)
+//         })
+//        // 2-products
 
-       const orderProducts = await orderModel.create({
-        user_id:req.user.id,
-        coupon:{
-            discount:cart.coupon_id?.discount||0
-        },
-        products: cart.products.map(
-            ({product_id:{title , price , discounted_price} , quantity})=>({
-                 quantity,
-                 product:{
-            title,
-            price,
-            discounted_price
-            }
-             })
-        ),
-         ...req.body,
+//        const orderProducts = await orderModel.create({
+//         user_id:req.user.id,
+//         coupon:{
+//             discount:cart.coupon_id?.discount||0
+//         },
+//         products: cart.products.map(
+//             ({product_id:{title , price , discounted_price} , quantity})=>({
+//                  quantity,
+//                  product:{
+//             title,
+//             price,
+//             discounted_price
+//             }
+//              })
+//         ),
+//          ...req.body,
 
-       })
+//        })
 
-       if (!orderProducts) throw new AppError('Order Failed' , 400)
-        const  bulckWriteOptions= cart.products.map(({product_id:{_id} , quantity})=>({
-            updateOne :{
-                filter :{_id},
-                update:{
-                   $inc: {
-                       stock:-quantity
-                   }
-                }
-           }
-        }))
-        await productModel.bulkWrite(bulckWriteOptions)
+//        if (!orderProducts) throw new AppError('Order Failed' , 400)
+//         const  bulckWriteOptions= cart.products.map(({product_id:{_id} , quantity})=>({
+//             updateOne :{
+//                 filter :{_id},
+//                 update:{
+//                    $inc: {
+//                        stock:-quantity
+//                    }
+//                 }
+//            }
+//         }))
+//         await productModel.bulkWrite(bulckWriteOptions)
        
-        res.json({orderProducts})
-    })
+//         res.json({orderProducts})
+//     })
 
- export const makePaymentSession = catchAsyncError(async(req , res)=>{
+//  export const makePaymentSession = catchAsyncError(async(req , res)=>{
 
- })   
+//  })   
 
 

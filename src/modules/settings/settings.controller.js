@@ -1,5 +1,4 @@
 import { AppError, catchAsyncError } from "../../utils/error.handler.js";
-import { makeCODorder } from "../cart/controllers/orders.controller.js";
 import imageModel from "../image/models/image.model.js";
 import { makeImage } from "../image/utils/image.utils.js";
 import settingsModel from "./settings.model.js";
