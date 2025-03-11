@@ -178,6 +178,15 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
     from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
     subject: 'Cart Checkout Request',
     text: `Customer ${req.user.email} from "${cart.user_id.companyName}" company wants to make an order with these products: ${arr_ele.join(', ')}`,
+    html: `
+    <h2>🛒 Cart Checkout</h2>
+    <p>Customer <strong>${req.user.email}</strong> from <strong>${cart.user_id.companyName}</strong> company wants to make an order.</p>
+    <p><strong>Products:</strong></p>
+    <ul>
+      ${arr_ele.map(item => `<li>${item}</li>`).join('')}
+    </ul>
+    <p><strong>Total:</strong> $${total}</p>
+  `
   };
 
   try {
