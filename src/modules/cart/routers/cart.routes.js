@@ -17,7 +17,7 @@ const router = Router()
 
 router.route('/').get(authenticate, authorize(ROLES.USER), assertCart, getCart)
 router.route('/all').get(authenticate, authorize(ROLES.ADMIN), assertCart, getCarts)
-router.route('/checkout').get(authenticate, authorize(ROLES.USER), assertCart, checkOutMail)
+router.route('/checkout').get(authenticate, authorize(ROLES.USER) , checkOutMail)
 router
 	.route('/add')
 	.put(authenticate, authorize(ROLES.USER), assertCart, addToCart)

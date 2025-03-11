@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import { AppError, catchAsyncError } from '../../utils/error.handler.js'
 import userModel from '../user/models/user.model.js'
 import transporter from '../../utils/email.js'
+import { assertCart } from '../cart/middlewares/cart.middleware.js'
  dotenv.config()
 export const signin = catchAsyncError(async (req, res) => {
 	const { email, password } = req.body
@@ -15,6 +16,7 @@ export const signin = catchAsyncError(async (req, res) => {
 
 	const { companyName, role, _id: id } = user
 	const token = jwt.sign({ companyName, role, id, email }, process.env.SECRET)
+     assertCart()
 	res.json({ token , message:"signed in successfully" , user })
 })
 

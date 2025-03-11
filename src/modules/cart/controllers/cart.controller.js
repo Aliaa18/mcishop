@@ -7,8 +7,7 @@ import orderModel from '../models/order.model.js'
 dotenv.config()
 export const getCart = catchAsyncError(async (req, res) => {
 	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
-    
-	res.json({ cart , status:"success" })
+  res.status(200).json({ status: "success" , cart });
 })
 export const getCarts = catchAsyncError(async (req, res) => {
 	const carts = await cartModel.find().populate('user_id')
@@ -18,6 +17,8 @@ export const getCarts = catchAsyncError(async (req, res) => {
 
 export const addToCart = catchAsyncError(async (req, res) => {
 	const { product_id } = req.body
+  console.log(req.user.id);
+  
 	const cart = await cartModel.findOne({ user_id: req.user.id })
               
 	const productEntry = cart.products.find(
@@ -157,7 +158,7 @@ export const applyCoupon = catchAsyncError(async (req, res) => {
 
 export const checkOutMail = catchAsyncError(async (req, res) => {
 	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
-      console.log(cart.user_id , req.user);
+      console.log( "user nooo", req.user.email);
      let cartPro = cart.products 
      let total = cart.total_price 
   let arr_ele = []

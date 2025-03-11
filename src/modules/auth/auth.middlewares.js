@@ -13,6 +13,7 @@ export const authenticate = (req, res, next) => {
 	try {
 		const decoded = jwt.verify(bearerToken, process.env.SECRET)
 		req.user = decoded
+		console.log(req.user);
 		next()
 	} catch (error) {
 		throw new AppError(error.message, 498)

@@ -6,10 +6,10 @@ import settingsModel from "./settings.model.js";
  
 
 
-export const getSettings = catchAsyncError( async(req,res,next)=>{
-       const setts = await settingsModel.find({}).populate('images')
-       res.json({ setts })
-})
+export const getSettings = catchAsyncError(async (req, res, next) => {
+  const setts = await settingsModel.find({}).populate('images');
+  res.status(200).json({ success: true, setts });
+});
 
 export const addSettings = catchAsyncError(async (req, res, next) => {
     const imageIds = [];
