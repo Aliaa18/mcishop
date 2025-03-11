@@ -97,7 +97,7 @@ export const forgetPassword=catchAsyncError(async(req,res)=>{
       console.log(process.env.FRONTEND_URL);
 	  
 	const email_token = jwt.sign({email},process.env.EMAIL_SECRET)
-  const link=`https://aliaa18.github.io/mcistore/resetPass/${email_token}`
+  const link=`${process.env.FRONTEND_URL}/resetPass/${email_token}`
   await transporter.sendMail({
   from:process.env.EMAIL,
   to:email,
