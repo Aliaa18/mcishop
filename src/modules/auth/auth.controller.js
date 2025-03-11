@@ -32,6 +32,7 @@ export const signup = catchAsyncError(async (req, res) => {
 		phone,
 		password: hashed,
 	})
+	assertCart()
 	res.status(201).json({ message: 'Signed up successfully' })
 })
 
