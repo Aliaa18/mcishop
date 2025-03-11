@@ -156,31 +156,75 @@ export const applyCoupon = catchAsyncError(async (req, res) => {
 	await cart.save()
 	res.json({ message: 'Coupon added successfully' })
 })
-
 export const checkOutMail = catchAsyncError(async (req, res) => {
-	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
-      console.log( "user nooo", req.user.email , process.env.EMAIL );
-     let cartPro = cart.products 
-     let total = cart.total_price 
-  let arr_ele = []
-      arr_ele = cart.products.map(( ele , i)=>( ele.product_id.title ))
-     // try {
-        await transporter.sendMail({  
-          from: process.env.EMAIL ,
-           to: process.env.EMAIL,
-          subject: 'Cart Checkout',
-          text: `Customer ${req.user.email} from "${cart.user_id.companyName}" company wants to make an order with these products: { ${arr_ele.join(', ')} }`,
-     //   });
-     // } catch (error) {
-      //  console.error('❌ Error sending email:', error);
-        // You can choose to continue anyway or throw an error
-        // return res.status(500).json({ message: 'Email sending failed', error });
-      })
+  try {
+    const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id');
+    if (!cart) {
+      throw new Error("Cart not found for the user.");
+    }
+
+    const cartPro = cart.products;
+    const total = cart.total_price;
+    const arr_ele = cartPro.map((ele) => ele.product_id.title);
+
+    console.log("🟢 Sending from:", process.env.EMAIL);
+    console.log("🟢 Customer email:", req.user.email);
+
+    await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: process.env.EMAIL, // or change to another recipient if needed
+      subject: 'Cart Checkout',
+      text: `Customer ${req.user.email} from "${cart.user_id.companyName}" company wants to make an order with these products: { ${arr_ele.join(', ')} }`,
+    });
+
+    const order = await orderModel.create({
+      user_id: req.user.id,
+      products: cartPro.map((p) => ({
+        product_id: p.product_id,
+        quantity: p.quantity,
+      })),
+      total_price: total,
+    });
+
+    return res.status(201).json({
+      message: '✅ Email sent to Mci-sales successfully. We will contact you soon!',
+      arr_ele,
+      order,
+    });
+
+  } catch (error) {
+    console.error('❌ Checkout failed:', error.message);
+    return res.status(500).json({
+      message: '❌ Something went wrong during checkout',
+      error: error.message,
+    });
+  }
+});
+
+// export const checkOutMail = catchAsyncError(async (req, res) => {
+// 	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
+//       console.log( "user nooo", req.user.email , process.env.EMAIL );
+//      let cartPro = cart.products 
+//      let total = cart.total_price 
+//   let arr_ele = []
+//       arr_ele = cart.products.map(( ele , i)=>( ele.product_id.title ))
+//       try {
+//         await transporter.sendMail({  
+//           from: process.env.EMAIL ,
+//            to: process.env.EMAIL,
+//           subject: 'Cart Checkout',
+//           text: `Customer ${req.user.email} from "${cart.user_id.companyName}" company wants to make an order with these products: { ${arr_ele.join(', ')} }`,
+//         });
+//       } catch (error) {
+//         console.error('❌ Error sending email:', error);
+//         // You can choose to continue anyway or throw an error
+//         // return res.status(500).json({ message: 'Email sending failed', error });
+//       }
       
-    const test = req.user.email
-    const order = await orderModel.create({user_id : req.user.id ,  products: cart.products.map((p) => ({
-      product_id: p.product_id, // IMPORTANT
-      quantity: p.quantity
-    })) , total_price :total})  
-	res.status(201).json({ test ,message: 'The email sent to Mci-sales successfully , we will contact you soon!'  , arr_ele , order  })
-})
+//     const test = req.user.email
+//     const order = await orderModel.create({user_id : req.user.id ,  products: cart.products.map((p) => ({
+//       product_id: p.product_id, // IMPORTANT
+//       quantity: p.quantity
+//     })) , total_price :total})  
+// 	res.status(201).json({ test ,message: 'The email sent to Mci-sales successfully , we will contact you soon!'  , arr_ele , order  })
+// })
