@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import orderModel from '../models/order.model.js'
 dotenv.config()
 export const getCart = catchAsyncError(async (req, res) => {
+  console.log( "get Cart" , req.user.id);
 	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
   res.status(200).json({ status: "success" , cart });
 })
@@ -163,12 +164,12 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
      let total = cart.total_price 
   let arr_ele = []
       arr_ele = cart.products.map(( ele , i)=>( ele.product_id.title ))
-	  transporter.sendMail({  
-		 from:req.user.email,
-		 to: process.env.EMAIL,
-		 subject: 'Cart Checkout',
-		 text: `customer  ${req.user.email} from " ${cart.user_id.companyName} " company wants to make an order with this products: { ${arr_ele} }`,
-	})
+	//   transporter.sendMail({  
+	// 	 from:req.user.email,
+	// 	 to: process.env.EMAIL,
+	// 	 subject: 'Cart Checkout',
+	// 	 text: `customer  ${req.user.email} from " ${cart.user_id.companyName} " company wants to make an order with this products: { ${arr_ele} }`,
+	// })
 
     const order = await orderModel.create({user_id : req.user.id ,  products: cart.products.map((p) => ({
       product_id: p.product_id, // IMPORTANT

@@ -7,11 +7,7 @@ import v1Router from './routers/v1.routes.js'
 const bootstrap = (app) => {
 	
 	app.use(express.json())
-	app.use(cors({
-		origin: '*', // You can restrict this later to specific domains
-		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-		allowedHeaders: ['Content-Type', 'Authorization']
-	  }));
+	app.use(cors());
 	app.options('*', cors()); 
 	app.use(morgan('dev'))
      app.get('/' , (req, res, next) => {
