@@ -8,7 +8,16 @@ import settingsModel from "./settings.model.js";
 
 export const getSettings = catchAsyncError(async (req, res, next) => {
   const setts = await settingsModel.find({}).populate('images');
-  res.status(200).json({ success: true, setts });
+
+  if (!setts || setts.length === 0) {
+    return res.status(404).json({ success: false, message: 'No settings found' });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Settings retrieved successfully',
+    setts,
+  });
 });
 
 export const addSettings = catchAsyncError(async (req, res, next) => {
@@ -50,7 +59,7 @@ export const addSettings = catchAsyncError(async (req, res, next) => {
        sett,
     });
   });
-  export const updateSettingSchema = catchAsyncError(async (req, res, next) => {
+  export const updateSettings = catchAsyncError(async (req, res, next) => {
     const setting = await settingsModel.findById(req.params.setting_id);
     if (!setting) throw new AppError('Setting Not Found', 404);
   

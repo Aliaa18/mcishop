@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { addSettings, deleteSettings, getSettings, updateSettingSchema } from './settings.controller.js'
+import { addSettings, deleteSettings, getSettings, updateSettings } from './settings.controller.js'
 import { upload } from '../../middlewares/upload.middleware.js'
 import { validate } from '../../middlewares/validation.middleware.js'
 import { addSettingsSchema } from './settings.validation.js'
@@ -22,7 +22,7 @@ router
     .delete(deleteSettings)
     .put( upload.fields([
         { name: 'images', maxCount: 10 },
-    ]),updateSettingSchema)
+    ]),updateSettings)
    
 
 

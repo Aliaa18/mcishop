@@ -55,10 +55,7 @@ const settingsSchema = new mongoose.Schema(
 )
 
 
-settingsSchema.pre(/find/, function (next) {
-    this.populate('images')
-    next()
-})
+
 
 settingsSchema.pre(/delete/i, async function (next) {
     const toBeDeleted = await this.model.findOne(this._conditions);
