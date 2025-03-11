@@ -13,7 +13,7 @@ export const authenticate = (req, res, next) => {
 	try {
 		const decoded = jwt.verify(bearerToken, process.env.SECRET)
 		req.user = decoded
-		console.log(req.user);
+	  //	console.log(req.user);
 		next()
 	} catch (error) {
 		throw new AppError(error.message, 498)
@@ -22,7 +22,7 @@ export const authenticate = (req, res, next) => {
 
 export const authorize = (role) => {
 	return (req, res, next) => {
-		     console.log(req);
+		    // console.log(req);
 			 
 		if (role !== req.user?.role) throw new AppError('Forbidden', 403)
 		next()

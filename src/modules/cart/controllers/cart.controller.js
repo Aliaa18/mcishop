@@ -4,7 +4,9 @@ import cartModel from '../models/cart.model.js'
 import transporter from '../../../utils/email.js'
 import dotenv from 'dotenv'
 import orderModel from '../models/order.model.js'
+import sgMail from '@sendgrid/mail'
 dotenv.config()
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 export const getCart = catchAsyncError(async (req, res) => {
   console.log( "get Cart" , req.user.id);
 	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
@@ -156,53 +158,99 @@ export const applyCoupon = catchAsyncError(async (req, res) => {
 	await cart.save()
 	res.json({ message: 'Coupon added successfully' })
 })
+
+
+
 export const checkOutMail = catchAsyncError(async (req, res) => {
-  try {
-    const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id');
-    if (!cart) {
-      throw new Error("Cart not found for the user.");
-    }
+  const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id');
 
-    const cartPro = cart.products;
-    const total = cart.total_price;
-    const arr_ele = cartPro.map((ele) => ele.product_id.title);
-
-    console.log("🟢 Sending from:", process.env.EMAIL);
-    console.log("🟢 Customer email:", req.user.email);
-    console.log("EMAIL ENV:", process.env.EMAIL);
-console.log("EMAIL_PASS ENV:", process.env.EMAIL_PASS);
-console.log("SMTP_HOST ENV:", process.env.SMTP_HOST);
-
-    await transporter.sendMail({
-      from: process.env.EMAIL,
-      to: process.env.EMAIL, // or change to another recipient if needed
-      subject: 'Cart Checkout',
-      text: `Customer ${req.user.email} from "${cart.user_id.companyName}" company wants to make an order with these products: { ${arr_ele.join(', ')} }`,
-    });
-
-    const order = await orderModel.create({
-      user_id: req.user.id,
-      products: cartPro.map((p) => ({
-        product_id: p.product_id,
-        quantity: p.quantity,
-      })),
-      total_price: total,
-    });
-
-    return res.status(201).json({
-      message: '✅ Email sent to Mci-sales successfully. We will contact you soon!',
-      arr_ele,
-      order,
-    });
-
-  } catch (error) {
-    console.error('❌ Checkout failed:', error.message);
-    return res.status(500).json({
-      message: '❌ Something went wrong during checkout',
-      error: error.message,
-    });
+  if (!cart) {
+    return res.status(404).json({ message: 'Cart not found' });
   }
+
+  const arr_ele = cart.products.map((ele) => ele.product_id.title);
+  const total = cart.total_price;
+  console.log(process.env.SENDGRID_API_KEY.startsWith('SG')); // Should print true
+
+  // Compose the message
+  const msg = {
+    to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
+    from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
+    subject: 'Cart Checkout Request',
+    text: `Customer ${req.user.email} from "${cart.user_id.companyName}" company wants to make an order with these products: ${arr_ele.join(', ')}`,
+  };
+
+  try {
+    await sgMail.send(msg);
+    console.log('✅ Email sent via SendGrid');
+  } catch (error) {
+    console.error('❌ Error sending email via SendGrid:', error.response?.body || error.message);
+    return res.status(500).json({ message: 'Email sending failed', error: error.message , process:process.env.SENDGRID_API_KEY });
+  }
+
+  // Create order
+  const order = await orderModel.create({
+    user_id: req.user.id,
+    products: cart.products.map((p) => ({
+      product_id: p.product_id,
+      quantity: p.quantity
+    })),
+    total_price: total
+  });
+
+  res.status(201).json({
+    message: 'The email was sent to MCI sales successfully, we will contact you soon!',
+    order,
+    arr_ele
+  });
 });
+// export const checkOutMail = catchAsyncError(async (req, res) => {
+//   try {
+//     const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id');
+//     if (!cart) {
+//       throw new Error("Cart not found for the user.");
+//     }
+
+//     const cartPro = cart.products;
+//     const total = cart.total_price;
+//     const arr_ele = cartPro.map((ele) => ele.product_id.title);
+
+//     console.log("🟢 Sending from:", process.env.EMAIL);
+//     console.log("🟢 Customer email:", req.user.email);
+//     console.log("EMAIL ENV:", process.env.EMAIL);
+// console.log("EMAIL_PASS ENV:", process.env.EMAIL_PASS);
+// console.log("SMTP_HOST ENV:", process.env.SMTP_HOST);
+
+// const msg = {
+//   to: process.env.EMAIL, // receiver email
+//   from: process.env.EMAIL, // verified sender email
+//   subject: 'Cart Checkout',
+//   text: `Customer ${req.user.email} from "${cart.user_id.companyName}" company wants to order: ${arr_ele.join(', ')}`,
+// };
+
+//     const order = await orderModel.create({
+//       user_id: req.user.id,
+//       products: cartPro.map((p) => ({
+//         product_id: p.product_id,
+//         quantity: p.quantity,
+//       })),
+//       total_price: total,
+//     });
+   
+//     return res.status(201).json({
+//       message: '✅ Email sent to Mci-sales successfully. We will contact you soon!',
+//       arr_ele,
+//       order,
+//     });
+
+//   } catch (error) {
+//     console.error('❌ Checkout failed:', error.message);
+//     return res.status(500).json({
+//       message: '❌ Something went wrong during checkout',
+//       error: error.message,
+//     });
+//   }
+// });
 
 // export const checkOutMail = catchAsyncError(async (req, res) => {
 // 	const cart = await cartModel.findOne({ user_id: req.user.id }).populate('user_id')
