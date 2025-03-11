@@ -164,12 +164,19 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
      let total = cart.total_price 
   let arr_ele = []
       arr_ele = cart.products.map(( ele , i)=>( ele.product_id.title ))
-	//   transporter.sendMail({  
-	// 	 from:req.user.email,
-	// 	 to: process.env.EMAIL,
-	// 	 subject: 'Cart Checkout',
-	// 	 text: `customer  ${req.user.email} from " ${cart.user_id.companyName} " company wants to make an order with this products: { ${arr_ele} }`,
-	// })
+      try {
+        await transporter.sendMail({  
+          from: req.user.email,
+          to: process.env.EMAIL,
+          subject: 'Cart Checkout',
+          text: `Customer ${req.user.email} from "${cart.user_id.companyName}" company wants to make an order with these products: { ${arr_ele.join(', ')} }`,
+        });
+      } catch (error) {
+        console.error('❌ Error sending email:', error);
+        // You can choose to continue anyway or throw an error
+        // return res.status(500).json({ message: 'Email sending failed', error });
+      }
+      
 
     const order = await orderModel.create({user_id : req.user.id ,  products: cart.products.map((p) => ({
       product_id: p.product_id, // IMPORTANT
