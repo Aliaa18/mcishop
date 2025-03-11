@@ -169,6 +169,9 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
 
     console.log("🟢 Sending from:", process.env.EMAIL);
     console.log("🟢 Customer email:", req.user.email);
+    console.log("EMAIL ENV:", process.env.EMAIL);
+console.log("EMAIL_PASS ENV:", process.env.EMAIL_PASS);
+console.log("SMTP_HOST ENV:", process.env.SMTP_HOST);
 
     await transporter.sendMail({
       from: process.env.EMAIL,
