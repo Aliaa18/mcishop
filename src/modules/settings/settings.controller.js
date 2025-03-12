@@ -59,16 +59,19 @@ export const addSettings = catchAsyncError(async (req, res, next) => {
        sett,
     });
   });
+
   export const updateSettings = catchAsyncError(async (req, res, next) => {
-    const setting = await settingsModel.findById(req.params.setting_id);
+    const setting = await settingsModel.findById(req.params.setting_id).populate('images');
     if (!setting) throw new AppError('Setting Not Found', 404);
+       console.log(setting);
+       
   
     // 1. Delete old images from DB
     
     
     // 2. Handle new uploaded images
     const newImgIds = [];
-    if (req.files.images?.length > 0) {
+    if (req.files?.images) {
         await Promise.all(
             setting.images.map(async (imageId) => {
               try {
@@ -105,8 +108,7 @@ export const addSettings = catchAsyncError(async (req, res, next) => {
         images: newImgIds,
       },
       { new: true } // <-- Return updated document
-    );
-  
+    ).populate('images');
     res.status(200).json({
       message: `Setting updated with ${newImgIds.length} image(s)`,
       setting: updatedSetting,
