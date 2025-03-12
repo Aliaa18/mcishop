@@ -179,15 +179,31 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
     subject: 'Cart Checkout Request',
     text: `Customer ${req.user.email} from "${cart.user_id.companyName}" company wants to make an order with these products: ${arr_ele.join(', ')}`,
     html: `
-    <h2>🛒 Cart Checkout</h2>
+  <div style="font-family: Arial, sans-serif; padding: 10px;">
+    <h2 style="color: #198754;">🛒 Cart Checkout</h2>
     <p>Customer <strong>${req.user.email}</strong> from <strong>${cart.user_id.companyName}</strong> company wants to make an order.</p>
     <p><strong>Products:</strong></p>
     <ul>
       ${arr_ele.map(item => `<li>${item}</li>`).join('')}
     </ul>
-    <p><strong>Total:</strong> $${total}</p>
-    <button className="btn btn-outline-success"> Go to the Order </button>
-  `
+    <p><strong>Total:</strong> ${total} EGP</p>
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="https://your-store-url.com/orders" style="
+        display: inline-block;
+        padding: 10px 25px;
+        border: 2px solid #198754;
+        border-radius: 30px;
+        color: #198754;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      " onmouseover="this.style.backgroundColor='#198754'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#198754';">
+        Go to the Order
+      </a>
+    </div>
+  </div>
+`
+
   };
 
   try {

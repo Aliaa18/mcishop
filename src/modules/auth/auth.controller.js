@@ -5,7 +5,10 @@ import { AppError, catchAsyncError } from '../../utils/error.handler.js'
 import userModel from '../user/models/user.model.js'
 import transporter from '../../utils/email.js'
 import { assertCart } from '../cart/middlewares/cart.middleware.js'
- dotenv.config()
+ import sgMail from '@sendgrid/mail'
+ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+ 
+dotenv.config()
 export const signin = catchAsyncError(async (req, res) => {
 	const { email, password } = req.body
 	const user = await userModel.findOne({ email })
@@ -97,14 +100,46 @@ export const forgetPassword=catchAsyncError(async(req,res)=>{
     console.log(process.env.FRONTEND_URL);
 	
 	const email_token = jwt.sign({email},process.env.EMAIL_SECRET)
-  const link=`${process.env.FRONTEND_URL}resetPass/${email_token}`
-  await transporter.sendMail({
-  from:process.env.EMAIL,
-  to:email,
-  subject:"forget Password",
-  text:"change your password",
-  html:`<a href=${link}>Click here to change your password</a>`
-  })
+  const link=`${process.env.FRONTEND_URL}/resetPass/${email_token}`
+  const msg = {
+    to: email, // 📥 Your internal email (sales, admin, etc.)
+    from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
+    subject: 'Change Password',
+	html:`
+	 <div style="text-align: center; margin-top: 20px;">
+      <a href=${link} style="
+        display: inline-block;
+        padding: 10px 25px;
+        border: 2px solid #198754;
+        border-radius: 30px;
+        color: #198754;
+        font-weight: 600;
+        text-decoration: none;
+		cursor:pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      " onmouseover="this.style.backgroundColor='#198754'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#198754';">
+       Click here to change your password
+      </a>
+    </div>
+	
+	`
+
+  };
+//   await transporter.sendMail({
+//   from:process.env.EMAIL,
+//   to:email,
+//   subject:"forget Password",
+//   text:"change your password",
+//   html:`<a href=${link}>Click here to change your password</a>`
+//   })
+  try {
+	 await sgMail.send(msg);
+	 console.log('✅ Email sent via SendGrid');
+   } catch (error) {
+	 console.error('❌ Error sending email via SendGrid:', error.response?.body || error.message);
+	 return res.status(500).json({ message: 'Email sending failed', error: error.message , process:process.env.SENDGRID_API_KEY });
+   }
+
 		  res.json({message: "check your email" , email_token})   
   })
 
