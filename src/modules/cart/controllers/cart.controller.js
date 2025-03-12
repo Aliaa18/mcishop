@@ -186,6 +186,7 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
       ${arr_ele.map(item => `<li>${item}</li>`).join('')}
     </ul>
     <p><strong>Total:</strong> $${total}</p>
+    <button className="btn btn-outline-success"> Go to the Order </button>
   `
   };
 

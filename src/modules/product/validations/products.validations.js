@@ -8,7 +8,7 @@ export const getProductSchema = Joi.object({
 
 export const addProductSchema = Joi.object({
 	body: {
-		title: Joi.string().min(3).max(200).trim().required(),
+		title: Joi.string().min(3).max(1000).trim().required(),
 		description: Joi.string().min(3).max(10000).trim().required(),
 		stock: Joi.number().min(0).required(),
 		price: Joi.number().min(0.01).required(),
@@ -25,7 +25,7 @@ export const addProductSchema = Joi.object({
 
 export const updateProductSchema = Joi.object({
 	body: {
-		title: Joi.string().min(3).max(200).trim(),
+		title: Joi.string().min(3).max(1000).trim(),
 		description: Joi.string().min(3).max(10000).trim(),
 		stock: Joi.number().min(0),
 		price: Joi.number().min(0.01),
