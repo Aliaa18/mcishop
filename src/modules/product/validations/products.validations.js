@@ -14,6 +14,7 @@ export const addProductSchema = Joi.object({
 		price: Joi.number().min(0.01).required(),
 		discounted_price: Joi.number().min(0.01),
 		features: Joi.string().min(3).max(10000).trim(),
+		apps: Joi.string().trim(),
 		subcategory_id: Joi.string().hex().length(24),
 		category_id: Joi.string().hex().length(24),
 		brand_id:Joi.string().hex().length(24)
@@ -31,6 +32,7 @@ export const updateProductSchema = Joi.object({
 		price: Joi.number().min(0.01),
 		discounted_price: Joi.number().min(0.01),
 		features: Joi.string().min(3).max(10000).trim(),
+		apps: Joi.string().trim(),
 		subcategory_id: Joi.string().hex().length(24),
 		category_id: Joi.string().hex().length(24),
 		brand_id: Joi.string().hex().length(24),
