@@ -7,7 +7,7 @@ import { validate } from '../../../middlewares/validation.middleware.js'
 import { addOrderSchema } from '../validation/orders.validation.js'
 const router = Router()
 
-router.route('/:user_id').get(authenticate , getUserOrders)
+router.route('/:user_id').get(getUserOrders)
 router.route('/all').get(authenticate, authorize(ROLES.ADMIN), getUsersOrders)
 
 // router
