@@ -188,7 +188,7 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
     </ul>
     <p><strong>Total:</strong> ${total} EGP</p>
     <div style="text-align: center; margin-top: 20px;">
-      <a href="http://localhost:3002/mci-dashboard#/users/${cart.user_id._id}" style="
+      <a href="http://localhost:3002/mci-dashboard#/userOrders/${cart.user_id._id}" style="
         display: inline-block;
         padding: 10px 25px;
         border: 2px solid #198754;
