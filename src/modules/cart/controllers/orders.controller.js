@@ -21,7 +21,35 @@ export const getUsersOrders = catchAsyncError(async (req, res) => {
 	res.json({ orders })
     
 })
+export const updateOrder = catchAsyncError(async (req , res )=>{
+     
+    try {
+        const { userId, orderId } = req.params;
+        const { status, isPaid, total_price } = req.body;
+    
+        // Create a safe update object (prevent unwanted fields like _id/user_id update)
+        const updateFields = {};
+        if (status !== undefined) updateFields.status = status;
+        if (isPaid !== undefined) updateFields.isPaid = isPaid;
+        if (total_price !== undefined) updateFields.total_price = total_price;
+    
+        const updatedOrder = await orderModel.findOneAndUpdate(
+          { _id: orderId, user_id: userId },
+          updateFields,
+          { new: true }
+        );
+    
+        if (!updatedOrder) {
+          return res.status(404).json({ success: false, message: "Order not found or doesn't belong to the user." });
+        }
+    
+        return res.status(200).json({ success: true, order: updatedOrder });
+      } catch (error) {
+        console.error("Update Order Error:", error);
+        return res.status(500).json({ success: false, message: "Server error." });
+      }
 
+})
 
 // export const makeCODorder = catchAsyncError(async(req,res)=>{
 //        // 1-cart
