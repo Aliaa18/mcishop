@@ -120,7 +120,7 @@ export const resetPasswordSchema =Joi.object({
 		  )
 		  .required()
 		  .messages({
-			'string.pattern.base': 'Password must be 9 characters or and digits and start With uppercase.',
+			'string.pattern.base': 'Password must be 9 characters and digits and start With uppercase.',
 			'any.required': 'New password is required.'
 		  }),
 	  }),
