@@ -22,13 +22,10 @@ export const addToCart = catchAsyncError(async (req, res) => {
 	const { product_id } = req.body
   console.log(req.user.id);
   
-	const cart = await cartModel.findOne({ user_id: req.user.id })
-              
+	const cart = await cartModel.findOne({ user_id: req.user.id })          
 	const productEntry = cart.products.find(
 		(entry) => entry.product_id._id.toString() === product_id
-	)
-              
-			  
+	)  
 	if (!productEntry) cart.products.push({ product_id, quantity: 1 })
 	else productEntry.quantity++
 

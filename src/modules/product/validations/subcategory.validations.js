@@ -34,6 +34,7 @@ export const updateSubcategorySchema = Joi.object({
 		categorySlug: Joi.string().required(),
 	},
 	query: {},
+	file: Joi.object(),
 })
 
 export const deleteSubcategorySchema = Joi.object({

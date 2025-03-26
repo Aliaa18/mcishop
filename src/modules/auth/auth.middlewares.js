@@ -6,7 +6,7 @@ import userModel from '../user/models/user.model.js'
 export const authenticate = (req, res, next) => {
 	const token = req.headers.token
            
-	if (!token || !token.startsWith('Bearer'))
+	if (!token || !token.startsWith('Bearer '))
 		throw new AppError('Unauthorized', 401)
 	const bearerToken = token.split(' ')[1]
 	  

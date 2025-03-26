@@ -33,7 +33,7 @@ export const updateOrder = catchAsyncError(async (req , res )=>{
         if (isPaid !== undefined) updateFields.isPaid = isPaid;
         if (total_price !== undefined) updateFields.total_price = total_price;
     
-        const updatedOrder = await orderModel.findOneAndUpdate(
+        const deletedOrder = await orderModel.findOneAndUpdate(
           { _id: orderId, user_id: userId },
           updateFields,
           { new: true }
@@ -49,6 +49,28 @@ export const updateOrder = catchAsyncError(async (req , res )=>{
         return res.status(500).json({ success: false, message: "Server error." });
       }
 
+})
+
+
+export const removeOrder = catchAsyncError( async (req , res) =>{
+  try {
+    const { userId, orderId } = req.params;
+
+    
+
+    const deletedOrder = await orderModel.findOneAndDelete(
+      { _id: orderId, user_id: userId }
+    );
+
+    if (!deletedOrder) {
+      return res.status(404).json({ success: false, message: "Order not found or doesn't belong to the user." });
+    }
+
+    return res.status(200).json({ success: true, order: deletedOrder });
+  } catch (error) {
+    console.error("Update Order Error:", error);
+    return res.status(500).json({ success: false, message: "Server error." });
+  }
 })
 
 // export const makeCODorder = catchAsyncError(async(req,res)=>{

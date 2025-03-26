@@ -19,7 +19,7 @@ export const signin = catchAsyncError(async (req, res) => {
 
 	const { companyName, role, _id: id } = user
 	const token = jwt.sign({ companyName, role, id, email }, process.env.SECRET)
-     assertCart()
+    // assertCart()
 	res.json({ token , message:"signed in successfully" , user })
 })
 

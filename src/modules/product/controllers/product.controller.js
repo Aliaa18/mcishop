@@ -1,5 +1,5 @@
 import { ApiFeatures } from '../../../utils/apiFeatures.js'
-import { catchAsyncError } from '../../../utils/error.handler.js'
+import { AppError, catchAsyncError } from '../../../utils/error.handler.js'
 import { makeImage } from '../../image/utils/image.utils.js'
 import brandModel from '../models/brand.model.js'
 import categoryModel from '../models/category.model.js'
@@ -61,75 +61,75 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 	})
 })
 
-export const updateProductWithImages = catchAsyncError(
-	async (req, res, next) => {
-		const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
-		// console.log( "noww" , subcategory);
-		 if (!subcategory) {
-			throw new Error('Subcategory not found');
-		  }
-		  const categoryId = subcategory.category_id;
-	// console.log(categoryId);
-	 const productData = { ...req.body, category_id: categoryId }
-
-		const product = await productModel.findOne({
-			slug: req.params.productSlug,
-		})
-			//console.log(product);
-		if (req.files?.images) {
-				
-			await Promise.all(
-				product.images.map(async (image) => {
-					//console.log("iam here" , image);
-					
-					try {
-						await imageOnProductModel.findByIdAndDelete(image._id)
-						
-						
-					} catch (error) {
-						return next(error)
-					}
-				})
-			)
-			await Promise.all(
-				req.files.images.map(async (file) => {
-					try {
-						const image = await makeImage(file.path)
-						//console.log("hello",image)
-						await imageOnProductModel.create({
-							image_id: image._id,
-							product_id: product._id,
-						})
-						//console.log("pro" , product.slug);
-						
-					} catch (error) {
-						return next(error)
-					}
-				})
-			)
-		}
-		
-		await productModel.updateOne(
-			{ slug: req.params.productSlug }, 
-			productData// Update data
-		);
-		subcategory.products.push(product._id);
-    await subcategory.save();
-   const category = await categoryModel.findById(categoryId);
-    category.products.push(product._id)
-	await category.save()
-	await brandModel.findByIdAndUpdate(req.body.brand_id, {
-		$push: { products: product._id },
-	  });
-			
-		res.json({
-			message: `Updated product with ${
-				req.files.images?.length || 0
-			} images`,
-		})
-		
+// controllers/productController.js
+export const updateProductWithImages = catchAsyncError(async (req, res, next) => {
+	const subcategory = await subcategoryModel.findById(req.body.subcategory_id);
+	if (!subcategory) {
+	  throw new Error('Subcategory not found');
 	}
-)
+	const categoryId = subcategory.category_id;
+  
+	const product = await productModel.findOne({ slug: req.params.productSlug });
+	if (!product) return next(new AppError('Product not found', 404));
+  
+	const productData = { ...req.body, category_id: categoryId };
+  
+	// ✅ IMAGE HANDLING
+	if (req.files?.images && req.files.images.length > 0) {
+	  // Delete old image references
+	  await Promise.all(product.images.map(async (image) => {
+		try {
+		  await imageOnProductModel.findByIdAndDelete(image._id);
+		} catch (error) {
+		  return next(error);
+		}
+	  }));
+  
+	  // Upload new images
+	  const newImageRefs = await Promise.all(req.files.images.map(async (file) => {
+		try {
+		  const image = await makeImage(file.path);
+		  const imgDoc = await imageOnProductModel.create({
+			image_id: image._id,
+			product_id: product._id,
+		  });
+		  return imgDoc._id;
+		} catch (error) {
+		  return next(error);
+		}
+	  }));
+  
+	  productData.images = newImageRefs;
+	} else {
+	  // ✅ No new images → Preserve existing images
+	  productData.images = product.images.map(img => img._id);
+	}
+  
+	// Update product
+	await productModel.updateOne({ slug: req.params.productSlug }, productData);
+  
+	// Update subcategory and category relationships
+	if (!subcategory.products.includes(product._id)) {
+	  subcategory.products.push(product._id);
+	  await subcategory.save();
+	}
+  
+	const category = await categoryModel.findById(categoryId);
+	if (!category.products.includes(product._id)) {
+	  category.products.push(product._id);
+	  await category.save();
+	}
+  
+	// Update brand products
+	await brandModel.findByIdAndUpdate(req.body.brand_id, {
+	  $addToSet: { products: product._id },
+	});
+  
+	res.json({
+	  message: `Product updated successfully with ${req.files?.images?.length || 0} new image(s).`,
+	});
+  });
+  
 
 export const deleteProduct = catchAsyncError(async (req, res, next) => {
 	const product = await productModel.findOneAndDelete({

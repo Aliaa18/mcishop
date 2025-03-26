@@ -60,31 +60,85 @@ export const addSettings = catchAsyncError(async (req, res, next) => {
     });
   });
 
+  // export const updateSettings = catchAsyncError(async (req, res, next) => {
+  //   const setting = await settingsModel.findById(req.params.setting_id).populate('images');
+  //   if (!setting) throw new AppError('Setting Not Found', 404);
+  //      console.log(setting);
+       
+  
+  //   // 1. Delete old images from DB
+    
+    
+  //   // 2. Handle new uploaded images
+  //   const newImgIds = [];
+  //   if (req.files?.images) {
+  //       await Promise.all(
+  //           setting.images.map(async (imageId) => {
+  //             try {
+  //               await imageModel.findByIdAndDelete(imageId);
+  //             } catch (err) {
+  //               return next(err);
+  //             }
+  //           })
+  //         );
+  //     await Promise.all(
+  //       req.files.images.map(async (file) => {
+  //         try {
+  //           const image = await makeImage(file.path)
+  //           newImgIds.push(image._id);
+  //         } catch (error) {
+  //           return next(error);
+  //         }
+  //       })
+  //     );
+  //   }
+  //    console.log(req.files);
+  //    if (req.body.services && typeof req.body.services === 'string') {
+  //       try {
+  //         req.body.services = JSON.parse(req.body.services);
+  //       } catch (error) {
+  //         return next(new AppError('Invalid JSON in services field', 400));
+  //       }
+  //     }
+  //   // 3. Update the setting document
+  //   const updatedSetting = await settingsModel.findByIdAndUpdate(
+  //     req.params.setting_id,
+  //     {
+  //       ...req.body,
+  //       images: newImgIds,
+  //     },
+  //     { new: true } 
+  //   ).populate('images');
+  //   res.status(200).json({
+  //     message: `Setting updated with ${newImgIds.length} image(s)`,
+  //     setting: updatedSetting,
+  //   });
+  // });
   export const updateSettings = catchAsyncError(async (req, res, next) => {
     const setting = await settingsModel.findById(req.params.setting_id).populate('images');
     if (!setting) throw new AppError('Setting Not Found', 404);
-       console.log(setting);
-       
   
-    // 1. Delete old images from DB
-    
-    
-    // 2. Handle new uploaded images
-    const newImgIds = [];
-    if (req.files?.images) {
-        await Promise.all(
-            setting.images.map(async (imageId) => {
-              try {
-                await imageModel.findByIdAndDelete(imageId);
-              } catch (err) {
-                return next(err);
-              }
-            })
-          );
+    let newImgIds = setting.images.map(img => img._id); // Default: keep existing images
+  
+    // If new images uploaded → delete old images and replace with new ones
+    if (req.files?.images && req.files.images.length > 0) {
+      // 1. Delete old images from DB
+      await Promise.all(
+        setting.images.map(async (imageId) => {
+          try {
+            await imageModel.findByIdAndDelete(imageId);
+          } catch (err) {
+            return next(err);
+          }
+        })
+      );
+  
+      // 2. Add new uploaded images
+      newImgIds = [];
       await Promise.all(
         req.files.images.map(async (file) => {
           try {
-            const image = await makeImage(file.path)
+            const image = await makeImage(file.path);
             newImgIds.push(image._id);
           } catch (error) {
             return next(error);
@@ -92,25 +146,28 @@ export const addSettings = catchAsyncError(async (req, res, next) => {
         })
       );
     }
-     console.log(req.files);
-     if (req.body.services && typeof req.body.services === 'string') {
-        try {
-          req.body.services = JSON.parse(req.body.services);
-        } catch (error) {
-          return next(new AppError('Invalid JSON in services field', 400));
-        }
+  
+    // Parse services JSON if sent as string
+    if (req.body.services && typeof req.body.services === 'string') {
+      try {
+        req.body.services = JSON.parse(req.body.services);
+      } catch (error) {
+        return next(new AppError('Invalid JSON in services field', 400));
       }
+    }
+  
     // 3. Update the setting document
     const updatedSetting = await settingsModel.findByIdAndUpdate(
       req.params.setting_id,
       {
         ...req.body,
-        images: newImgIds,
+        images: newImgIds, // Either old ones or new ones based on above condition
       },
-      { new: true } // <-- Return updated document
+      { new: true }
     ).populate('images');
+  
     res.status(200).json({
-      message: `Setting updated with ${newImgIds.length} image(s)`,
+      message: `Setting updated successfully`,
       setting: updatedSetting,
     });
   });
