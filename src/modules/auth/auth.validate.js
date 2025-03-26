@@ -31,7 +31,7 @@ export const signupSchema = Joi.object({
 				/^[A-Z][A-Za-z\d]{8}$/
 
 			).messages({
-				'string.pattern.base': 'Password must be at most 8 characters and digits and start With uppercase.'
+				'string.pattern.base': 'Password must be 9 characters and digits and start With uppercase.'
 			}),
 			companyName: Joi.string(),
 			role: Joi.string().valid('USER', 'ADMIN').default('USER').optional(),
@@ -67,7 +67,7 @@ export const updateUserSchema = Joi.object({
 				/^[A-Z][A-Za-z\d]{8}$/
 
 			).messages({
-				'string.pattern.base': 'Password must be at most 8 characters and digits and start With uppercase.'
+				'string.pattern.base': 'Password must be 9 characters and digits and start With uppercase.'
 			}),
 			companyName: Joi.string(),
 			role: Joi.string().valid('USER', 'ADMIN').default('USER').optional(),
@@ -120,7 +120,7 @@ export const resetPasswordSchema =Joi.object({
 		  )
 		  .required()
 		  .messages({
-			'string.pattern.base': 'Password must be at most 8 characters or and digits and start With uppercase.',
+			'string.pattern.base': 'Password must be 9 characters or and digits and start With uppercase.',
 			'any.required': 'New password is required.'
 		  }),
 	  }),
