@@ -36,9 +36,7 @@ const productSchema = new mongoose.Schema(
 			required: true,
 		},
 		price: {
-			type: Number,
-			min: 0.01,
-			required: true,
+			type: String,
 		},
 		discounted_price: {
 			type: Number,
