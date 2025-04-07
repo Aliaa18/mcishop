@@ -166,7 +166,7 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
   }
 
   const arr_ele = cart.products.map((ele) => ele.product_id.title);
-  const total = cart.total_price;
+  // const total = cart.total_price;
   console.log(process.env.SENDGRID_API_KEY.startsWith('SG')); // Should print true
 
   // Compose the message
@@ -183,7 +183,6 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
     <ul>
       ${arr_ele.map(item => `<li>${item}</li>`).join('')}
     </ul>
-    <p><strong>Total:</strong> ${total} EGP</p>
     <div style="text-align: center; margin-top: 20px;">
       <a href="http://localhost:3002/mci-dashboard#/userOrders/${cart.user_id._id}" style="
         display: inline-block;
@@ -218,7 +217,7 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
       product_id: p.product_id,
       quantity: p.quantity
     })),
-    total_price: total
+    // total_price: total
   });
 
   res.status(201).json({
