@@ -47,7 +47,7 @@ cartSchema.pre(/find/, function (next) {
 cartSchema.virtual('total_price').get(function () {
 	const total = this.products.reduce(
 		(acc, entry) =>
-			acc + parseFloat(entry.product_id?.price.split(' ')[0]) * entry.quantity,
+			acc + entry.product_id?.price * entry.quantity,
 		0
 	)
 	return total 
