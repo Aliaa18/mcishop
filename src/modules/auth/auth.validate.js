@@ -17,21 +17,19 @@ export const signupSchema = Joi.object({
 				tlds: { allow: ['com', 'net'] },
 			})
 	, phone: Joi.string()
-	.pattern(/^01[0125][0-9]{8}$/)
+	
 	.required()
 	.messages({
-	  'string.pattern.base': 'Phone number must be a valid Egyptian number (e.g. 010xxxxxxxx).',
+	  
 	  'string.empty': 'Phone number is required.',
 	})
   
 	 ,
 		password: Joi.string()
 			
-			.pattern(
-				/^[A-Z][A-Za-z\d]{8}$/
+			.messages({
+				'string.empty': 'Password is required.',
 
-			).messages({
-				'string.pattern.base': 'Password must be 9 characters and digits and start With uppercase.'
 			}),
 			companyName: Joi.string(),
 			role: Joi.string().valid('USER', 'ADMIN').default('USER').optional(),
@@ -55,19 +53,19 @@ export const updateUserSchema = Joi.object({
 				tlds: { allow: ['com', 'net'] },
 			})
 	,phone: Joi.string()
-	.pattern(/^01[0125][0-9]{8}$/)
+	
 	.required()
 	.messages({
-	  'string.pattern.base': 'Phone number must be a valid Egyptian number (e.g. 010xxxxxxxx).',
+	  
 	  'string.empty': 'Phone number is required.',
-	}),
+	})
+  
+	 ,
 		password: Joi.string()
 			
-			.pattern(
-				/^[A-Z][A-Za-z\d]{8}$/
+			.messages({
+				'string.empty': 'Password is required.',
 
-			).messages({
-				'string.pattern.base': 'Password must be 9 characters and digits and start With uppercase.'
 			}),
 			companyName: Joi.string(),
 			role: Joi.string().valid('USER', 'ADMIN').default('USER').optional(),
@@ -114,13 +112,9 @@ export const forgetPasswordSchema =Joi.object({
 export const resetPasswordSchema =Joi.object({
 	body: Joi.object({
 		newPassword: Joi.string()
-		  .pattern(
-			/^[A-Z][A-Za-z\d]{8}$/
-
-		  )
+		  
 		  .required()
 		  .messages({
-			'string.pattern.base': 'Password must be 9 characters and digits and start With uppercase.',
 			'any.required': 'New password is required.'
 		  }),
 	  }),
