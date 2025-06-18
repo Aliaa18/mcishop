@@ -35,6 +35,22 @@ export const signup = catchAsyncError(async (req, res) => {
 		phone,
 		password: hashed,
 	})
+
+	const msg = {
+		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
+		from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
+		subject: 'New User Signup Notification',
+		text: `A new user has signed up.`,
+		html: `
+			<h2>New Signup</h2>
+			<p><strong>Company:</strong> ${companyName}</p>
+			<p><strong>Email:</strong> ${email}</p>
+			<p><strong>Phone:</strong> ${phone}</p>
+		`,
+	
+	  };
+	  await sgMail.send(msg)
+
 	assertCart()
 	res.status(201).json({ message: 'Signed up successfully' })
 })
