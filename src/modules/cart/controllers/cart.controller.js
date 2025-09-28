@@ -204,11 +204,10 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
   };
 
   try {
-    await sgMail.send(msg);
-    console.log('✅ Email sent via SendGrid');
-  } catch (error) {
-    console.error('❌ Error sending email via SendGrid:', error.response?.body || error.message);
-    return res.status(500).json({ message: 'Email sending failed', error: error.message , process:process.env.SENDGRID_API_KEY });
+    let info = await transporter.sendMail(msg);
+    console.log("Message sent: %s", info.messageId);
+  } catch (err) {
+    console.error("Error sending email:", err);
   }
 
   // Create order
