@@ -15,12 +15,13 @@ export const getProducts = catchAsyncError(async (req, res, next) => {
 		.search(['title', 'description'])
 		.sort()
 	const products = await apiFeature.query
-	res.json({ products } , req.user)
+	res.json({ products })
 })
 
 export const getProduct = catchAsyncError(async (req, res, next) => {
+	const user=req.user
 	const product = await productModel.findOne({ slug: req.params.productSlug })
-	res.json({ product })
+	res.json({ product , user})
 })
 
 export const addProductWithImages = catchAsyncError(async (req, res, next) => {
