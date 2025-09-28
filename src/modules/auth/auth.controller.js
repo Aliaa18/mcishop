@@ -153,13 +153,12 @@ export const forgetPassword=catchAsyncError(async(req,res)=>{
 //   text:"change your password",
 //   html:`<a href=${link}>Click here to change your password</a>`
 //   })
-  try {
-	 await sgMail.send(msg);
-	 console.log('✅ Email sent via SendGrid');
-   } catch (error) {
-	 console.error('❌ Error sending email via SendGrid:', error.response?.body || error.message);
-	 return res.status(500).json({ message: 'Email sending failed', error: error.message , process:process.env.SENDGRID_API_KEY });
-   }
+   try {
+    let info = await transporter.sendMail(msg);
+    console.log("Message sent: %s", info.messageId);
+  } catch (err) {
+    console.error("Error sending email:", err);
+  }
 
 		  res.json({message: "check your email" , email_token})   
   })
