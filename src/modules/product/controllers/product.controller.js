@@ -8,7 +8,7 @@ import productModel from '../models/product.model.js'
 import subcategoryModel from '../models/subcategory.model.js'
 
 export const getProducts = catchAsyncError(async (req, res, next) => {
-	const user=req.user
+	
 	const apiFeature = new ApiFeatures(productModel.find(), req.query)
 		.paginate()
 		.fields()
@@ -16,7 +16,7 @@ export const getProducts = catchAsyncError(async (req, res, next) => {
 		.search(['title', 'description'])
 		.sort()
 	const products = await apiFeature.query
-	res.json({ products , user })
+	res.json({ products })
 })
 
 export const getProduct = catchAsyncError(async (req, res, next) => {
