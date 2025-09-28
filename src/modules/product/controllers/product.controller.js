@@ -62,7 +62,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 		)
 
 	res.status(201).json({
-		message: `Added product with ${req.files.images?.length || 0} images`,
+		message: `Added product with ${req.files.images?.length || 0} images`, user
 	})
 })
 
