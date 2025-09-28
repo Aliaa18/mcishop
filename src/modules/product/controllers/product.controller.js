@@ -26,7 +26,13 @@ export const getProduct = catchAsyncError(async (req, res, next) => {
 })
 
 export const addProductWithImages = catchAsyncError(async (req, res, next) => {
-    const user = req.user
+      const user = req.user;
+
+  // Role check
+  if (user.role === "SEMIADMIN") {
+    return res.status(403).json({ message: "SEMIADMIN " });
+  }
+
 	 const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
 	// console.log( "noww" , subcategory);
 	 if (!subcategory) {
