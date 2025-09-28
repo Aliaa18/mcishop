@@ -15,7 +15,7 @@ export const getProducts = catchAsyncError(async (req, res, next) => {
 		.search(['title', 'description'])
 		.sort()
 	const products = await apiFeature.query
-	res.json({ products })
+	res.json({ products } , req.user)
 })
 
 export const getProduct = catchAsyncError(async (req, res, next) => {
@@ -24,6 +24,7 @@ export const getProduct = catchAsyncError(async (req, res, next) => {
 })
 
 export const addProductWithImages = catchAsyncError(async (req, res, next) => {
+    const user = req.user
 	 const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
 	// console.log( "noww" , subcategory);
 	 if (!subcategory) {
@@ -31,7 +32,9 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 	  }
 	const categoryId = subcategory.category_id;
 	// console.log(categoryId);
-	 const productData = { ...req.body, category_id: categoryId }
+	 
+	const productData = { ...req.body, category_id: categoryId }
+        
 	const product = await productModel.create(productData)
 	subcategory.products.push(product._id);
     await subcategory.save();
