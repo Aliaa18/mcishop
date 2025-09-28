@@ -49,7 +49,12 @@ export const signup = catchAsyncError(async (req, res) => {
 		`,
 	
 	  };
-	  await sgMail.send(msg)
+	 try {
+    let info = await transporter.sendMail(msg);
+    console.log("Message sent: %s", info.messageId);
+  } catch (err) {
+    console.error("Error sending email:", err);
+  }
 
 	assertCart()
 	res.status(201).json({ message: 'Signed up successfully' })

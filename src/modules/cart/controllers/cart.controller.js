@@ -164,7 +164,8 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
   if (!cart) {
     return res.status(404).json({ message: 'Cart not found' });
   }
-
+     console.log(cart);
+     
   const arr_ele = cart.products.map((ele) => ele.product_id.title);
   // const total = cart.total_price;
   console.log(process.env.SENDGRID_API_KEY.startsWith('SG')); // Should print true
