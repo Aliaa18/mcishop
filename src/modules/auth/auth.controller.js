@@ -95,19 +95,22 @@ export const getUser = catchAsyncError(async (req, res) => {
 })
 
 export const updateUser = catchAsyncError(async (req, res) => {
-	const { user_id } = req.params
-	 const updateData = { ...req.body }
+  const { user_id } = req.params
+  const updateData = { ...req.body }
 
   if (updateData.password) {
     updateData.password = await bcrypt.hash(updateData.password, 10)
   }
-	const user = await userModel.findOneAndUpdate(
-		{ _id: user_id },
-		updateData,
-		{new:true}
-	)
-	res.status(201).json({ user })
+
+  const user = await userModel.findOneAndUpdate(
+    { _id: user_id },
+    { $set: updateData },
+    { new: true, runValidators: true }
+  )
+
+  res.status(200).json({ user })
 })
+
 
 export const deleteUser= catchAsyncError(async (req, res) => {
 	const { user_id } = req.params
