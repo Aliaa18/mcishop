@@ -35,11 +35,11 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 	  }
 	const categoryId = subcategory.category_id;
 	// console.log(categoryId);
-	  let status = "approved";
-  if (user.role === "SEMIADMIN") {
-    status = "pending";
-  }
-	const productData = { ...req.body, category_id: categoryId , status  }
+// 	  let status = "approved";
+//   if (user.role === "SEMIADMIN") {
+//     status = "pending";
+//   }
+	const productData = { ...req.body, category_id: categoryId  }
         
 	const product = await productModel.create(productData)
 	subcategory.products.push(product._id);
@@ -64,25 +64,25 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 				}
 			})
 		)
-		if (user.role ==="SEMIADMIN"){
-			const msg = {
-		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
-		from: process.env.EMAIL , // 📤 Sender (same if you're using one verified domain/email)
-		subject: 'New User Signup Notification',
-		text: `A new .`,
-		html: `
-			<h2>New Signup</h2>
+// 		if (user.role ==="SEMIADMIN"){
+// 			const msg = {
+// 		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
+// 		from: process.env.EMAIL , // 📤 Sender (same if you're using one verified domain/email)
+// 		subject: 'New User Signup Notification',
+// 		text: `A new .`,
+// 		html: `
+// 			<h2>New Signup</h2>
 			
-		`,
+// 		`,
 	
-	  };
-	 try {
-    let info = await transporter.sendMail(msg);
-    console.log("Message sent: %s", info.messageId);
-  } catch (err) {
-    console.error("Error sending email:", err);
-  }
-		}
+// 	  };
+// 	 try {
+//     let info = await transporter.sendMail(msg);
+//     console.log("Message sent: %s", info.messageId);
+//   } catch (err) {
+//     console.error("Error sending email:", err);
+//   }
+// 		}
 
 	res.status(201).json({
 		message: `Added product with ${req.files.images?.length || 0} images`, user
