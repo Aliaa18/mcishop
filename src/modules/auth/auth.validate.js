@@ -11,11 +11,12 @@ export const signinSchema = Joi.object({
 
 export const signupSchema = Joi.object({
 	body: {
-		email: Joi.string()
-			.email({
-				minDomainSegments: 2,
-				tlds: { allow: ['com', 'net'] },
-			})
+		email: Joi.string().required()
+	.messages({
+	  
+	  'string.empty': 'Email is required.',
+	})
+			
 	, phone: Joi.string()
 	
 	.required()
@@ -32,7 +33,7 @@ export const signupSchema = Joi.object({
 
 			}),
 			companyName: Joi.string(),
-			role: Joi.string().valid('USER', 'ADMIN').default('USER').optional(),
+			role: Joi.string().valid('USER', 'ADMIN' , 'SEMIADMIN').default('USER').optional(),
 	},
 	params: {},
 	query: {},
@@ -48,10 +49,11 @@ export const validateEmailSchema = Joi.object({
 export const updateUserSchema = Joi.object({
 	body: {
 		email: Joi.string()
-			.email({
-				minDomainSegments: 2,
-				tlds: { allow: ['com', 'net'] },
-			})
+			.required()
+	.messages({
+	  
+	  'string.empty': 'Emial is required.',
+	})
 	,phone: Joi.string()
 	
 	.required()
@@ -68,7 +70,7 @@ export const updateUserSchema = Joi.object({
 
 			}),
 			companyName: Joi.string(),
-			role: Joi.string().valid('USER', 'ADMIN').default('USER').optional(),
+			role: Joi.string().valid('USER', 'ADMIN' , 'SEMIADMIN').default('USER').optional(),
 	},
 	params: { user_id: Joi.string()
 		.pattern(/^[0-9a-fA-F]{24}$/) // Ensures it's a valid hexadecimal ObjectId
@@ -99,11 +101,7 @@ export const deleteUserSchema = Joi.object({
 
 export const forgetPasswordSchema =Joi.object({
     body:{
-        email:Joi.string().email({
-            minDomainSegments:2,
-            maxDomainSegments:5,
-            tlds:{allow:["com" , "net"]}
-           }).required() 
+        email:Joi.string().required() 
     },
     query:{},
     params:{}
