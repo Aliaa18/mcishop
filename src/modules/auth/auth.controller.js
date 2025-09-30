@@ -96,6 +96,11 @@ export const getUser = catchAsyncError(async (req, res) => {
 
 export const updateUser = catchAsyncError(async (req, res) => {
 	const { user_id } = req.params
+	 const updateData = { ...req.body }
+
+  if (updateData.password) {
+    updateData.password = await bcrypt.hash(updateData.password, 10)
+  }
 	const user = await userModel.findOneAndUpdate(
 		{ _id: user_id },
 		req.body,
