@@ -10,7 +10,7 @@ import subcategoryModel from '../models/subcategory.model.js'
 
 export const getProducts = catchAsyncError(async (req, res, next) => {
 	
-	const apiFeature = new ApiFeatures(productModel.find({status:"approved"}), req.query)
+	const apiFeature = new ApiFeatures(productModel.find(), req.query)
 		.paginate()
 		.fields()
 		.filter()
