@@ -1,4 +1,5 @@
 import { ApiFeatures } from '../../../utils/apiFeatures.js'
+import transporter from '../../../utils/email.js'
 import { AppError, catchAsyncError } from '../../../utils/error.handler.js'
 import { makeImage } from '../../image/utils/image.utils.js'
 import brandModel from '../models/brand.model.js'
@@ -9,7 +10,7 @@ import subcategoryModel from '../models/subcategory.model.js'
 
 export const getProducts = catchAsyncError(async (req, res, next) => {
 	
-	const apiFeature = new ApiFeatures(productModel.find(), req.query)
+	const apiFeature = new ApiFeatures(productModel.find({status:"approved"}), req.query)
 		.paginate()
 		.fields()
 		.filter()
@@ -27,12 +28,6 @@ export const getProduct = catchAsyncError(async (req, res, next) => {
 
 export const addProductWithImages = catchAsyncError(async (req, res, next) => {
       const user = req.user;
-
-  // Role check
-  if (user.role === "SEMIADMIN") {
-    return res.status(403).json({ message: "SEMIADMIN " });
-  }
-
 	 const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
 	// console.log( "noww" , subcategory);
 	 if (!subcategory) {
@@ -40,8 +35,11 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 	  }
 	const categoryId = subcategory.category_id;
 	// console.log(categoryId);
-	 
-	const productData = { ...req.body, category_id: categoryId }
+	  let status = "approved";
+  if (user.role === "SEMIADMIN") {
+    status = "pending";
+  }
+	const productData = { ...req.body, category_id: categoryId , status  }
         
 	const product = await productModel.create(productData)
 	subcategory.products.push(product._id);
@@ -66,6 +64,25 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 				}
 			})
 		)
+		if (user.role ==="SEMIADMIN"){
+			const msg = {
+		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
+		from: user.email , // 📤 Sender (same if you're using one verified domain/email)
+		subject: 'New User Signup Notification',
+		text: `A new Product approved.`,
+		html: `
+			<h2>New Signup</h2>
+			
+		`,
+	
+	  };
+	 try {
+    let info = await transporter.sendMail(msg);
+    console.log("Message sent: %s", info.messageId);
+  } catch (err) {
+    console.error("Error sending email:", err);
+  }
+		}
 
 	res.status(201).json({
 		message: `Added product with ${req.files.images?.length || 0} images`, user

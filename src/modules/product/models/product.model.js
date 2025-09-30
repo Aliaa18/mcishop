@@ -73,7 +73,13 @@ const productSchema = new mongoose.Schema(
 		brand_id:{
 			type:mongoose.Schema.Types.ObjectId,
 			ref:"brand"
-		}
+		},
+		status: {
+           type: String,
+                enum: ["pending", "approved", "rejected"],
+                   default: "pending"
+                  }
+
 	},
 	{
 		timestamps: true,
