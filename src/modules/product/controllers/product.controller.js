@@ -1,15 +1,15 @@
 import { ApiFeatures } from '../../../utils/apiFeatures.js'
 import transporter from '../../../utils/email.js'
 import { AppError, catchAsyncError } from '../../../utils/error.handler.js'
+import dotenv from 'dotenv'
 import { makeImage } from '../../image/utils/image.utils.js'
 import brandModel from '../models/brand.model.js'
 import categoryModel from '../models/category.model.js'
 import imageOnProductModel from '../models/imageOnProduct.js'
 import productModel from '../models/product.model.js'
 import subcategoryModel from '../models/subcategory.model.js'
-
+dotenv.config()
 export const getProducts = catchAsyncError(async (req, res, next) => {
-	
 	const apiFeature = new ApiFeatures(productModel.find(), req.query)
 		.paginate()
 		.fields()
@@ -67,9 +67,9 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 		if (user.role ==="SEMIADMIN"){
 			const msg = {
 		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
-		from: user.email , // 📤 Sender (same if you're using one verified domain/email)
+		from: process.env.EMAIL , // 📤 Sender (same if you're using one verified domain/email)
 		subject: 'New User Signup Notification',
-		text: `A new Product approved.`,
+		text: `A new .`,
 		html: `
 			<h2>New Signup</h2>
 			
