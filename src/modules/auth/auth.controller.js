@@ -103,7 +103,7 @@ export const updateUser = catchAsyncError(async (req, res) => {
   }
 	const user = await userModel.findOneAndUpdate(
 		{ _id: user_id },
-		req.body,
+		updateData,
 		{new:true}
 	)
 	res.status(201).json({ user })
