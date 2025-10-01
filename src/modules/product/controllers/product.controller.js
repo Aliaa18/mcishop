@@ -68,7 +68,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 		message: `Added product with ${req.files.images?.length || 0} images`, user
 	})
 		}
-		if (user.role.toUpperCase() === "SEMIADMIN"){
+		if (user.role?.toUpperCase() === "SEMIADMIN"){
 			const msg = {
 		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
 		from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
@@ -86,8 +86,13 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
   } catch (err) {
     console.error("Error sending email:", err);
   }
+  res.status(201).json({
+		message: `sended`
+	})
 		}
-	 
+	 res.status(201).json({
+		message: `none`
+	})
 })
 
 // controllers/productController.js
