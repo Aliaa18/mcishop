@@ -29,7 +29,9 @@ export const getProduct = catchAsyncError(async (req, res, next) => {
 export const addProductWithImages = catchAsyncError(async (req, res, next) => {
       const user = req.user;
 	  console.log(user);
-	  
+	    if (user.role==="ADMIN") {
+			return res.json({message: "hello" , user})
+		}
 	 const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
 	 if (!subcategory) {
 		throw new Error('Subcategory not found');
