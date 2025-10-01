@@ -64,7 +64,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 		)
 
 
-	res.status(201).json({
+	return  res.status(201).json({
 		message: `Added product with ${req.files.images?.length || 0} images`, user
 	})
 		}
@@ -72,10 +72,10 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 			const msg = {
 		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
 		from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
-		subject: 'New User Signup Notification',
-		text: `A new user has signed up.`,
+		subject: 'New product Notification',
+		text: `A new .`,
 		html: `
-			<h2>New Signup</h2>
+			<h2>New product</h2>
 			
 		`,
 	
@@ -86,11 +86,11 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
   } catch (err) {
     console.error("Error sending email:", err);
   }
-  res.status(201).json({
+   return  res.status(200).json({
 		message: `sended`
 	})
 		}
-	 res.status(201).json({
+	return res.status(201).json({
 		message: `none`
 	})
 })
