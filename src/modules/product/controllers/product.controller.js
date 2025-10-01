@@ -64,37 +64,19 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 		)
 
 
-	res.status(201).json({
+	return res.status(201).json({
 		message: `Added product with ${req.files.images?.length || 0} images`, user
 	})
 		}
 
      if (user.role === "SEMIADMIN"){
-		 const productData = JSON.stringify(req.body);
-
-   const msg = {
-		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
-		from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
-		subject: 'New User Signup Notification',
-		text: `A new user has signed up.`,
-		html: `
-			<h2>New Signup</h2>
-			
-		`,
-	
-	  };
-	 try {
-	   let info = await transporter.sendMail(msg);
-	   console.log("Message sent: %s", info.messageId);
-	 } catch (err) {
-	   console.error("Error sending email:", err);
-	 }
+		
 
     return res.status(200).json({
       success: true,
       message: "Request sent to admin for approval",
     });
-	 }
+	 } 
 // 	 const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
 // 	// console.log( "noww" , subcategory);
 // 	 if (!subcategory) {
