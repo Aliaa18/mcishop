@@ -27,7 +27,7 @@ export const getProduct = catchAsyncError(async (req, res, next) => {
 })
 
 export const addProductWithImages = catchAsyncError(async (req, res, next) => {
-	  const test = req.body
+	  
       const user = req.user;
 	  console.log(user);
 	    if (user.role?.toUpperCase() === "ADMIN") {
@@ -66,7 +66,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 
 
 	return  res.status(201).json({
-		message: `Added product with ${req.files.images?.length || 0} images`, user
+		message: `Added product with ${req.files.images?.length || 0} images successfully`, user
 	})
 		}
 		const brand = await brandModel.findById(req.body.brand_id);
@@ -89,6 +89,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
       <li><strong>Subcategory: </strong> ${subcategory? subcategory.name : "unknown"}</li>
       <li><strong>Description: </strong> ${req.body.description}</li>
       <li><strong>Applications: </strong> ${req.body.apps}</li>
+      <li><strong>Features: </strong> ${req.body.features}</li>
     </ul>
 
 			
@@ -102,7 +103,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
     console.error("Error sending email:", err);
   }
    return  res.status(200).json({
-		test
+		message: "The Request sended to the admin "
 	})
 		}
 	return res.status(201).json({
