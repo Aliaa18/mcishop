@@ -72,6 +72,25 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 		const brand = await brandModel.findById(req.body.brand_id);
        const subcategory = await subcategoryModel.findById(req.body.subcategory_id);
 		if (user.role?.toUpperCase() === "SEMIADMIN"){
+          let attachments = [];
+  let imagesHtml = "";
+
+  if (req.files?.images) {
+    attachments = req.files.images.map((file, index) => ({
+      filename: file.originalname,
+      path: file.path,         // المسار المؤقت من multer
+      cid: `productImage${index}` // لازم يبقى unique
+    }));
+
+    imagesHtml = req.files.images
+      .map(
+        (file, index) =>
+          `<img src="cid:productImage${index}" width="200" style="margin:5px;" />`
+      )
+      .join("");
+  }
+
+
 			const msg = {
 		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
 		from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
@@ -84,17 +103,18 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
     <ul>
       <li><strong>Title: </strong> ${req.body.title}</li>
       <li><strong>Price: </strong> ${req.body.price}</li>
-      <li><strong>Stock: </strong> ${req.body.stock}</li>
+      <li><strong>Stock: </strong> ${req.body.stock || ""}</li>
       <li><strong>Brand: </strong> ${brand? brand.name :"unknown"}</li>
       <li><strong>Subcategory: </strong> ${subcategory? subcategory.name : "unknown"}</li>
-      <li><strong>Description: </strong> ${req.body.description}</li>
-      <li><strong>Applications: </strong> ${req.body.apps}</li>
-      <li><strong>Features: </strong> ${req.body.features}</li>
+      <li><strong>Description: </strong> ${req.body.description || ""}</li>
+      <li><strong>Applications: </strong> ${req.body.apps || ""}</li>
+      <li><strong>Features: </strong> ${req.body.features || ""}</li>
     </ul>
 
-			
+			<h3>Product Images:</h3>
+      ${imagesHtml || "No product images"}
 		`,
-	
+	   attachments
 	  };
 	 try {
     let info = await transporter.sendMail(msg);
