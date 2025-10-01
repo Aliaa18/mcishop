@@ -83,7 +83,6 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
       <li><strong>Price: </strong> ${req.body.price}</li>
       <li><strong>Stock: </strong> ${req.body.stock}</li>
       <li><strong>Brand: </strong> ${req.body.brand_id.name}</li>
-      <li><strong>Category: </strong> ${req.body.category_id.name}</li>
       <li><strong>Subcategory: </strong> ${req.body.subcategory_id.name}</li>
       <li><strong>Description: </strong> ${req.body.description}</li>
       <li><strong>Applications: </strong> ${req.body.apps}</li>
