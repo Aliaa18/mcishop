@@ -28,36 +28,14 @@ export const getProduct = catchAsyncError(async (req, res, next) => {
 
 export const addProductWithImages = catchAsyncError(async (req, res, next) => {
       const user = req.user;
-	 const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
+        if (user.role === "ADMIN"){
+			const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
 	// console.log( "noww" , subcategory);
 	 if (!subcategory) {
 		throw new Error('Subcategory not found');
 	  }
 	const categoryId = subcategory.category_id;
 	// console.log(categoryId);
-		if (user.role ==="SEMIADMIN"){
-			const msg = {
-		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
-		from: process.env.EMAIL , // 📤 Sender (same if you're using one verified domain/email)
-		subject: 'New  Product Approved',
-		text: `A new product  .`,
-		html: `
-			<h2>New Product</h2>
-			
-		`,
-	
-	  };
-	 try {
-    let info = await transporter.sendMail(msg);
-    console.log("Message sent: %s", info.messageId);
-	res.status(201).json({
-		message: 'email sent ', user
-	})
-  } catch (err) {
-    console.error("Error sending email:", err);
-  }
-
-		}
 
 	const productData = { ...req.body, category_id: categoryId  }
         
@@ -89,6 +67,72 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 	res.status(201).json({
 		message: `Added product with ${req.files.images?.length || 0} images`, user
 	})
+		}
+
+     if (user.role === "SEMIADMIN"){
+		 const productData = JSON.stringify(req.body);
+
+   const msg = {
+		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
+		from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
+		subject: 'New User Signup Notification',
+		text: `A new user has signed up.`,
+		html: `
+			<h2>New Signup</h2>
+			
+		`,
+	
+	  };
+	 try {
+	   let info = await transporter.sendMail(msg);
+	   console.log("Message sent: %s", info.messageId);
+	 } catch (err) {
+	   console.error("Error sending email:", err);
+	 }
+
+    return res.status(200).json({
+      success: true,
+      message: "Request sent to admin for approval",
+    });
+	 }
+// 	 const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
+// 	// console.log( "noww" , subcategory);
+// 	 if (!subcategory) {
+// 		throw new Error('Subcategory not found');
+// 	  }
+// 	const categoryId = subcategory.category_id;
+// 	// console.log(categoryId);
+
+// 	const productData = { ...req.body, category_id: categoryId  }
+        
+// 	const product = await productModel.create(productData)
+// 	subcategory.products.push(product._id);
+//     await subcategory.save();
+//    const category = await categoryModel.findById(categoryId);
+//     category.products.push(product._id)
+// 	await category.save()
+// 	await brandModel.findByIdAndUpdate(req.body.brand_id, {
+// 		$push: { products: product._id },
+// 	  });
+// 	if (req.files?.images)
+// 		await Promise.all(
+// 			req.files.images.map(async (file) => {
+// 				try {
+// 					const image = await makeImage(file.path)
+// 					await imageOnProductModel.create({
+// 						image_id: image._id,
+// 						product_id: product._id,
+// 					})
+// 				} catch (error) {
+// 					return next(error)
+// 				}
+// 			})
+// 		)
+
+
+// 	res.status(201).json({
+// 		message: `Added product with ${req.files.images?.length || 0} images`, user
+// 	})
 })
 
 // controllers/productController.js
