@@ -16,6 +16,7 @@ import {
 } from '../controllers/product.controller.js'
 import { attachCoverImage } from '../middlewares/product.middlewares.js'
 import reviewRouter from './review.routes.js'
+import { authenticate } from '../../auth/auth.middlewares.js'
 
 const router = Router()
 
@@ -29,6 +30,7 @@ router
 		]),
 		validate(addProductSchema),
 		attachCoverImage(),
+		authenticate,
 		addProductWithImages
 	)
 
