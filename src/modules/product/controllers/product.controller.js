@@ -30,9 +30,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
       const user = req.user;
 	  console.log(user);
 	    if (user.role?.toUpperCase() === "ADMIN") {
-			return res.json({message: "hello" , user})
-		}
-	 const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
+			const subcategory= await subcategoryModel.findById(req.body.subcategory_id)
 	 if (!subcategory) {
 		throw new Error('Subcategory not found');
 	  }
@@ -69,6 +67,27 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 	res.status(201).json({
 		message: `Added product with ${req.files.images?.length || 0} images`, user
 	})
+		}
+		if (user.role.toUpperCase() === "SEMIADMIN"){
+			const msg = {
+		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
+		from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
+		subject: 'New User Signup Notification',
+		text: `A new user has signed up.`,
+		html: `
+			<h2>New Signup</h2>
+			
+		`,
+	
+	  };
+	 try {
+    let info = await transporter.sendMail(msg);
+    console.log("Message sent: %s", info.messageId);
+  } catch (err) {
+    console.error("Error sending email:", err);
+  }
+		}
+	 
 })
 
 // controllers/productController.js
