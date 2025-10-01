@@ -72,10 +72,20 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 			const msg = {
 		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
 		from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
-		subject: 'New product Notification',
+		subject: 'New Product Request',
 		text: `A new .`,
 		html: `
-			<h2>New product</h2>
+			<h2>New Product Request</h2>
+    <p>User <strong>${user.email}</strong> requested to add a product.</p>
+    <h3>Product Details:</h3>
+    <ul>
+      <li><strong>Title:</strong> ${req.body.title}</li>
+      <li><strong>Price:</strong> ${req.body.price}</li>
+      <li><strong>Stock:</strong> ${req.body.stock}</li>
+      <li><strong>Brand:</strong> ${req.body.brand_id}</li>
+      <li><strong>Subcategory:</strong> ${req.body.subcategory_id}</li>
+      <li><strong>Description:</strong> ${req.body.description}</li>
+    </ul>
 			
 		`,
 	
