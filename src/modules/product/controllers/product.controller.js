@@ -39,10 +39,10 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 			const msg = {
 		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
 		from: process.env.EMAIL , // 📤 Sender (same if you're using one verified domain/email)
-		subject: 'New User Signup Notification',
-		text: `A new .`,
+		subject: 'New  Product Approved',
+		text: `A new product  .`,
 		html: `
-			<h2>New Signup</h2>
+			<h2>New Product</h2>
 			
 		`,
 	
@@ -50,10 +50,15 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 	 try {
     let info = await transporter.sendMail(msg);
     console.log("Message sent: %s", info.messageId);
+	res.status(201).json({
+		message: 'email sent ', user
+	})
   } catch (err) {
     console.error("Error sending email:", err);
   }
+
 		}
+
 	const productData = { ...req.body, category_id: categoryId  }
         
 	const product = await productModel.create(productData)
