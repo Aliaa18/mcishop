@@ -75,10 +75,10 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
           let attachments = [];
   let imagesHtml = "";
 
-   if (req.files?.cover?.[0]) {
+   if (req.files?.cover_image?.[0]) {
     attachments.push({
-      filename: req.files.cover[0].originalname,
-      path: req.files.cover[0].path,
+      filename: req.files.cover_image[0].originalname,
+      path: req.files.cover_image[0].path,
       cid: "coverImage" // لازم يبقى ثابت عشان نستدعيه في الـ HTML
     });
 
