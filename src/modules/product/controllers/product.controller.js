@@ -68,6 +68,8 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 		message: `Added product with ${req.files.images?.length || 0} images`, user
 	})
 		}
+		const brand = await brandModel.findById(req.body.brand_id);
+       const subcategory = await subcategoryModel.findById(req.body.subcategory_id);
 		if (user.role?.toUpperCase() === "SEMIADMIN"){
 			const msg = {
 		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
@@ -82,8 +84,8 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
       <li><strong>Title: </strong> ${req.body.title}</li>
       <li><strong>Price: </strong> ${req.body.price}</li>
       <li><strong>Stock: </strong> ${req.body.stock}</li>
-      <li><strong>Brand: </strong> ${req.body.brand_id.name}</li>
-      <li><strong>Subcategory: </strong> ${req.body.subcategory_id.name}</li>
+      <li><strong>Brand: </strong> ${brand? brand.name :"unknown"}</li>
+      <li><strong>Subcategory: </strong> ${subcategory? subcategory.name : "unknown"}</li>
       <li><strong>Description: </strong> ${req.body.description}</li>
       <li><strong>Applications: </strong> ${req.body.apps}</li>
     </ul>
