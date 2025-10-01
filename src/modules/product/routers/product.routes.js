@@ -24,13 +24,13 @@ router
 	.route('/')
 	.get(getProducts)
 	.post(
+		authenticate,
 		upload.fields([
 			{ name: 'cover_image', maxCount: 1 },
 			{ name: 'images', maxCount: 8 },
 		]),
 		validate(addProductSchema),
 		attachCoverImage(),
-		authenticate,
 		addProductWithImages
 	)
 

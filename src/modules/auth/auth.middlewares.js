@@ -4,7 +4,7 @@ import { AppError, catchAsyncError } from '../../utils/error.handler.js'
 import userModel from '../user/models/user.model.js'
 
 export const authenticate = (req, res, next) => {
-	const token = req.headers.token
+	const token = req.headers.authorization || req.headers.token;
            
 	if (!token || !token.startsWith('Bearer '))
 		throw new AppError('Unauthorized', 401)
@@ -18,6 +18,7 @@ export const authenticate = (req, res, next) => {
 	} catch (error) {
 		throw new AppError(error.message, 498)
 	}
+	
 }
 
 export const authorize = (role) => {
