@@ -27,6 +27,7 @@ export const getProduct = catchAsyncError(async (req, res, next) => {
 })
 
 export const addProductWithImages = catchAsyncError(async (req, res, next) => {
+	  const test = req.body
       const user = req.user;
 	  console.log(user);
 	    if (user.role?.toUpperCase() === "ADMIN") {
@@ -89,14 +90,14 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
       <li><strong>Description: </strong> ${req.body.description}</li>
       <li><strong>Applications: </strong> ${req.body.apps}</li>
     </ul>
-       <h3>Cover Image:</h3>
-	      <img src="${req.body.cover_image.path}" alt="Product Image" width="200" style="margin:5px;" />
+//        <h3>Cover Image:</h3>
+// 	      <img src="${req.body.cover_image.path}" alt="Product Image" width="200" style="margin:5px;" />
 
-	<h3>Product Images:</h3>
+// 	<h3>Product Images:</h3>
 
-    ${req.body.images.map(img => `
-     <img src="${img.image_id.path}" alt="Product Images" width="200" style="margin:5px;" />
-  `).join('')}
+//     ${req.body.images.map(img => `
+//      <img src="${img.image_id.path}" alt="Product Images" width="200" style="margin:5px;" />
+//   `).join('')}
 			
 		`,
 	
@@ -108,7 +109,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
     console.error("Error sending email:", err);
   }
    return  res.status(200).json({
-		message: `sended`
+		test
 	})
 		}
 	return res.status(201).json({
