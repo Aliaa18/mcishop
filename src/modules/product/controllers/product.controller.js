@@ -75,19 +75,38 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
           let attachments = [];
   let imagesHtml = "";
 
-  if (req.files?.images) {
-    attachments = req.files.images.map((file, index) => ({
-      filename: file.originalname,
-      path: file.path,         // المسار المؤقت من multer
-      cid: `productImage${index}` // لازم يبقى unique
-    }));
+   if (req.files?.cover?.[0]) {
+    attachments.push({
+      filename: req.files.cover[0].originalname,
+      path: req.files.cover[0].path,
+      cid: "coverImage" // لازم يبقى ثابت عشان نستدعيه في الـ HTML
+    });
 
-    imagesHtml = req.files.images
-      .map(
-        (file, index) =>
-          `<img src="cid:productImage${index}" width="200" style="margin:5px;" />`
-      )
-      .join("");
+    imagesHtml += `
+      <h3>Cover Image:</h3>
+      <img src="cid:coverImage" width="250" style="margin:5px;" />
+    `;
+  }
+
+  // ✅ باقي الصور
+  if (req.files?.images) {
+    attachments.push(
+      ...req.files.images.map((file, index) => ({
+        filename: file.originalname,
+        path: file.path,
+        cid: `productImage${index}`
+      }))
+    );
+
+    imagesHtml += `
+      <h3>Product Images:</h3>
+      ${req.files.images
+        .map(
+          (file, index) =>
+            `<img src="cid:productImage${index}" width="200" style="margin:5px;" />`
+        )
+        .join("")}
+    `;
   }
 
 
@@ -112,7 +131,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
     </ul>
 
 			<h3>Product Images:</h3>
-      ${imagesHtml || "No product images"}
+        ${imagesHtml || "<p>No images provided</p>"}
 		`,
 	   attachments
 	  };
