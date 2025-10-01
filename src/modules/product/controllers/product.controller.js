@@ -130,7 +130,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
       <li><strong>Features: </strong> ${req.body.features || ""}</li>
     </ul>
 
-			<h3>Product Images:</h3>
+			
         ${imagesHtml || "<p>No images provided</p>"}
 		`,
 	   attachments
