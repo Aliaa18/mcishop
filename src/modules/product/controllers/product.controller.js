@@ -132,6 +132,14 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 
 			
         ${imagesHtml || "<p>No images provided</p>"}
+
+
+		<br/><br/>
+<a " 
+   style="background:green;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">Approve</a>
+<a " 
+   style="background:red;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">Reject</a>
+
 		`,
 	   attachments
 	  };
