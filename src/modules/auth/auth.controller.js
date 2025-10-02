@@ -37,8 +37,8 @@ export const signup = catchAsyncError(async (req, res) => {
 	})
 
 	const msg = {
-		to: "alaa.mohamed@mci-egypt.com", // 📥 Your internal email (sales, admin, etc.)
-		from: "alaa.mohamed@mci-egypt.com", // 📤 Sender (same if you're using one verified domain/email)
+		to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
+		from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
 		subject: 'New User Signup Notification',
 		text: `A new user has signed up.`,
 		html: `
