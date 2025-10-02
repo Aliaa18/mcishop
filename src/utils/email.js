@@ -2,10 +2,10 @@ import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 dotenv.config()
 const transporter = nodemailer.createTransport({
-     service:'gmail',
+     service:'Outlook',
 	auth: {
-		user: "aliaasultan75@gmail.com",
-		pass: "ymse namv tnmm lsva",
+		user: "alaa.mohamed@mci-egypt.com",
+		pass: "jlzuohiawocevnuu",
 	},
 })
 

@@ -25,7 +25,17 @@ export const getProduct = catchAsyncError(async (req, res, next) => {
 	const product = await productModel.findOne({ slug: req.params.productSlug })
 	res.json({ product})
 })
+// export const rejectProduct = catchAsyncError(async (req, res, next) => {
+//   try {
+//     const { token } = req.query;
+//     if (!token) return res.status(400).send("Invalid request");
 
+//     jwt.verify(token, process.env.SECRET); // بس نتحقق من صحته
+//     res.send("<h2>❌ Product Rejected and not added</h2>");
+//   } catch (err) {
+//     res.status(400).send("Reject failed: " + err.message);
+//   }
+//  })
 export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 	  
       const user = req.user;
@@ -136,7 +146,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 
 		<br/><br/>
 <a " 
-   style="background:green;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">Approve</a>
+   style="background:green;color:white;padding:10px 20px;border-radius:5px;text-decoration:none; margin-right:10px">Approve</a>
 <a " 
    style="background:red;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">Reject</a>
 
