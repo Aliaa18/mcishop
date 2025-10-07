@@ -96,8 +96,8 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 
     const pendingProduct = await pendingProductModel.create(pendingData);
 
-    const approveUrl = `${process.env.BASE_URL}/api/v1/products/approve/${pendingProduct._id}`;
-    const rejectUrl = `${process.env.BASE_URL}/api/v1/products/reject/${pendingProduct._id}`;
+    const approveUrl = `${process.env.FRONTEND_URL}/api/v1/products/approve/${pendingProduct._id}`;
+    const rejectUrl = `${process.env.FRONTEND_URL}/api/v1/products/reject/${pendingProduct._id}`;
 
     let attachments = [];
     let imagesHtml = "";
