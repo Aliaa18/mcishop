@@ -50,13 +50,16 @@ export const approveProduct = async (req, res) => {
         })
       );
     }
+     const populatedProduct = await productModel
+  .findById(newProduct._id)
+  .populate("cover_image"); // ✅ هنا بنجيب بيانات الصورة الحقيقية
 
     // ✅ 4. حذف المنتج من pending بعد الموافقة
     await pendingProductModel.findByIdAndDelete(id);
 
     res.status(200).json({
       message: "✅ Product approved successfully",
-      product: newProduct,
+      product: populatedProduct,
     });
   } catch (error) {
     console.error("❌ Approve product error:", error);
