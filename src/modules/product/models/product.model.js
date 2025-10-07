@@ -51,7 +51,7 @@ const productSchema = new mongoose.Schema(
 		},
 		cover_image: {
 			type: mongoose.Schema.Types.ObjectId,
-			required: true,
+			
 			ref: 'image',
 		},
 		features: {
