@@ -28,6 +28,8 @@ export const approveProduct = async (req, res) => {
       title: pendingProduct.title,
       price: pendingProduct.price,
       stock: pendingProduct.stock,
+      apps: pendingProduct.apps,
+      features: pendingProduct.features,
       description: pendingProduct.description,
       brand_id: pendingProduct.brand_id,
       subcategory_id: pendingProduct.subcategory_id,
