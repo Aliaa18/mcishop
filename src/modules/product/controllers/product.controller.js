@@ -49,7 +49,8 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
     const categoryId = subcategory.category_id;
 
     const productData = { ...req.body, category_id: categoryId };
-
+        console.log(productData);
+		
     const product = await productModel.create(productData);
     subcategory.products.push(product._id);
     await subcategory.save();
