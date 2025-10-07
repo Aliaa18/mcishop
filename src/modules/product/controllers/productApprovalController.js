@@ -14,9 +14,12 @@ export const approveProduct = async (req, res) => {
     if (!pendingProduct) {
       return res.status(404).json({ message: "Pending product not found" });
     }
-      let coverImage = null;
+      let coverImageDoc = null;
     if (pendingProduct.coverImagePath) {
-      coverImage = await makeImage(pendingProduct.coverImagePath);
+      coverImageDoc = await imageModel.create({
+        name: "cover_" + pendingProduct.title,
+        path: pendingProduct.coverImagePath,
+      });
     }
     //  const coverImage = await makeImage(pendingProduct.coverImagePath);
 
@@ -28,13 +31,18 @@ export const approveProduct = async (req, res) => {
       description: pendingProduct.description,
       brand_id: pendingProduct.brand_id,
       subcategory_id: pendingProduct.subcategory_id,
-      cover_image: coverImage ? coverImage._id : null,    });
+      cover_image:coverImageDoc ? coverImageDoc._id : null ,
+    });
 
     // ✅ 3. إنشاء باقي الصور وربطها بالمنتج
     if (pendingProduct.imagePaths && pendingProduct.imagePaths.length > 0) {
       await Promise.all(
         pendingProduct.imagePaths.map(async (imgPath) => {
-       const img = await makeImage(imgPath); // <-- هنا نرفعها فعلاً
+          const img = await imageModel.create({
+            name: "product_" + pendingProduct.title,
+            path: imgPath,
+          });
+
           await imageOnProductModel.create({
             image_id: img._id,
             product_id: newProduct._id,
