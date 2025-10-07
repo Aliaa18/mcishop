@@ -4,6 +4,7 @@ import imageOnProductModel from "../models/imageOnProduct.js";
 import pendingProductModel from "../models/pendingProduct.model.js";
 import productModel from "../models/product.model.js";
 import product from "../models/product.model.js";
+import subcategoryModel from "../models/subcategory.model.js";
 
 // ✅ اعتماد المنتج (Approve)
 
@@ -12,11 +13,15 @@ export const approveProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const pendingProduct = await pendingProductModel.findById(id);
-
+      
     if (!pendingProduct) {
       return res.status(404).json({ message: "Pending product not found" });
     }
-
+     const subcategory = await subcategoryModel.findById(pendingProduct.subcategory_id);
+    if (!subcategory) {
+      return res.status(404).json({ message: "Subcategory not found" });
+    }
+    const categoryId = subcategory.category_id;
     // ✅ Upload cover image to Cloudinary
     let coverImageDoc = null;
     if (pendingProduct.coverImagePath) {
@@ -33,6 +38,7 @@ export const approveProduct = async (req, res) => {
       features: pendingProduct.features,
       brand_id: pendingProduct.brand_id,
       subcategory_id: pendingProduct.subcategory_id,
+      category_id: categoryId,
       cover_image: coverImageDoc?._id || null,
     });
 
