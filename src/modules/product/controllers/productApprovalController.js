@@ -1,18 +1,19 @@
 import pendingProductModel from "../models/pendingProduct.model.js";
+import productModel from "../models/product.model.js";
 import product from "../models/product.model.js";
 
 // ✅ اعتماد المنتج (Approve)
 export const approveProduct = async (req, res) => {
   try {
     const { id } = req.query; // بناخد الـ id من query ?id=xxxx
-    const pendingProduct = await ProductPending.findById(id);
+    const pendingProduct = await pendingProductModel.findById(id);
 
     if (!pendingProduct) {
       return res.status(404).json({ message: "Pending product not found" });
     }
 
     // إنشاء المنتج الجديد من بيانات الـ Pending
-    const newProduct = new Product({
+    const newProduct = new product({
       title: pendingProduct.title,
       price: pendingProduct.price,
       stock: pendingProduct.stock,
@@ -25,7 +26,7 @@ export const approveProduct = async (req, res) => {
     await newProduct.save();
 
     // حذف المنتج من كولكشن pending بعد الاعتماد
-    await ProductPending.findByIdAndDelete(id);
+    await pendingProductModel.findByIdAndDelete(id);
 
     res.status(200).json({
       message: "Product approved successfully",
