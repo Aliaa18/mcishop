@@ -8,10 +8,10 @@ import product from "../models/product.model.js";
 // ✅ اعتماد المنتج (Approve)
 export const approveProduct = async (req, res) => {
   try {
-    const { pendingProductId } = req.params;
-    console.log('🟡 pendingProductId:', pendingProductId);
+    const { id } = req.params;
+    console.log('🟡 id:', id);
 
-    const pendingProduct = await pendingProductModel.findById(pendingProductId);
+    const pendingProduct = await pendingProductModel.findById(id);
     if (!pendingProduct) {
       console.log('❌ pendingProduct not found');
       return res.status(404).json({ message: 'Pending product not found' });
@@ -55,14 +55,14 @@ export const approveProduct = async (req, res) => {
       }
     }
 
-    await pendingProductModel.findByIdAndDelete(pendingProductId);
+    await pendingProductModel.findByIdAndDelete(id);
     console.log('🗑️ Pending product deleted');
 
     res.status(201).json({
       message: 'Product approved and moved successfully',
       product,
     });
-  } catch (error) {
+  }catch (error) {
     console.error("❌ Approve product error:", error);
     res.status(500).json({ message: error.message });
   }
