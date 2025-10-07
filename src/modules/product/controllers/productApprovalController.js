@@ -5,7 +5,7 @@ import product from "../models/product.model.js";
 // ✅ اعتماد المنتج (Approve)
 export const approveProduct = async (req, res) => {
   try {
-    const { id } = req.query; // بناخد الـ id من query ?id=xxxx
+    const { id } = req.params; 
     const pendingProduct = await pendingProductModel.findById(id);
 
     if (!pendingProduct) {
@@ -40,7 +40,7 @@ export const approveProduct = async (req, res) => {
 // ❌ رفض المنتج (Reject)
 export const rejectProduct = async (req, res) => {
   try {
-    const { id } = req.query;
+    const { id } = req.params;
 
     const deleted = await ProductPending.findByIdAndDelete(id);
 
