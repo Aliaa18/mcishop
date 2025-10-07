@@ -27,8 +27,10 @@ export const approveProduct = async (req, res) => {
     const newProduct = await productModel.create({
       title: pendingProduct.title,
       price: pendingProduct.price,
-      stock: pendingProduct.stock,
       description: pendingProduct.description,
+      stock: pendingProduct.stock,
+      apps: pendingProduct.apps,
+      features: pendingProduct.features,
       brand_id: pendingProduct.brand_id,
       subcategory_id: pendingProduct.subcategory_id,
       cover_image: coverImageDoc?._id || null,
