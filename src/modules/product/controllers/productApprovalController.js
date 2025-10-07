@@ -1,3 +1,4 @@
+import imageModel from "../../image/models/image.model.js";
 import pendingProductModel from "../models/pendingProduct.model.js";
 import productModel from "../models/product.model.js";
 import product from "../models/product.model.js";
