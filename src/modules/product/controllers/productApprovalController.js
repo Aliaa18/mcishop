@@ -73,7 +73,7 @@ export const rejectProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deleted = await ProductPending.findByIdAndDelete(id);
+    const deleted = await pendingProductModel.findByIdAndDelete(id);
 
     if (!deleted) {
       return res.status(404).json({ message: "Pending product not found" });
