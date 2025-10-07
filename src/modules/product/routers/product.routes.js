@@ -17,9 +17,10 @@ import {
 import { attachCoverImage } from '../middlewares/product.middlewares.js'
 import reviewRouter from './review.routes.js'
 import { authenticate } from '../../auth/auth.middlewares.js'
-
+import { approveProduct , rejectProduct } from '../controllers/productApprovalController.js'
 const router = Router()
-
+  router.get("/approve", approveProduct);
+router.get("/reject", rejectProduct);
 router
 	.route('/')
 	.get(getProducts)
