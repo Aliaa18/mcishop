@@ -13,7 +13,13 @@ export const approveProduct = async (req, res) => {
     if (!pendingProduct) {
       return res.status(404).json({ message: "Pending product not found" });
     }
-
+      let coverImageDoc = null;
+    if (pendingProduct.coverImagePath) {
+      coverImageDoc = await imageModel.create({
+        name: "cover_" + pendingProduct.title,
+        path: pendingProduct.coverImagePath,
+      });
+    }
     // ✅ 1) إنشاء المنتج في كولكشن products (بدون صور حالياً)
     const newProduct = await productModel.create({
       title: pendingProduct.title,
@@ -22,32 +28,27 @@ export const approveProduct = async (req, res) => {
       description: pendingProduct.description,
       brand_id: pendingProduct.brand_id,
       subcategory_id: pendingProduct.subcategory_id,
-      cover_image: null, // هيتضاف بعدين
+      cover_image: coverImageDoc ? coverImageDoc._id : null,
     });
 
-    // ✅ 2) إنشاء الـ cover image
-    let coverImageDoc = null;
-    if (pendingProduct.coverImagePath) {
-      const img = await imageModel.create({ url: pendingProduct.coverImagePath });
-      coverImageDoc = img;
-      newProduct.cover_image = img._id;
-      await newProduct.save();
-    }
-
-    // ✅ 3) إنشاء صور الجاليري داخل image + imageOnProduct
-    if (pendingProduct.imagePaths?.length) {
+    // ✅ 3. إنشاء باقي الصور وربطها بالمنتج
+    if (pendingProduct.imagePaths && pendingProduct.imagePaths.length > 0) {
       await Promise.all(
-        pendingProduct.imagePaths.map(async (url) => {
-          const image = await imageModel.create({ url });
+        pendingProduct.imagePaths.map(async (imgPath) => {
+          const img = await imageModel.create({
+            name: "product_" + pendingProduct.title,
+            path: imgPath,
+          });
+
           await imageOnProductModel.create({
-            image_id: image._id,
+            image_id: img._id,
             product_id: newProduct._id,
           });
         })
       );
     }
 
-    // ✅ 4) حذف المنتج من pending بعد الاعتماد
+    // ✅ 4. حذف المنتج من pending بعد الموافقة
     await pendingProductModel.findByIdAndDelete(id);
 
     res.status(200).json({
