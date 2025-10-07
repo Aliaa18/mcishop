@@ -96,8 +96,9 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 
     const pendingProduct = await pendingProductModel.create(pendingData);
 
-    const approveUrl = `${process.env.FRONTEND_URL}/api/v1/products/approve/${pendingProduct._id}`;
-    const rejectUrl = `${process.env.FRONTEND_URL}/api/v1/products/reject/${pendingProduct._id}`;
+    const approveUrl = `https://mcishops.com/api/v1/products/approve/${pendingProduct._id}`;
+const rejectUrl = `https://mcishops.com/api/v1/products/reject/${pendingProduct._id}`;
+
 
     let attachments = [];
     let imagesHtml = "";
