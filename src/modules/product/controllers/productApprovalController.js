@@ -5,7 +5,7 @@ import product from "../models/product.model.js";
 // ✅ اعتماد المنتج (Approve)
 export const approveProduct = async (req, res) => {
  try {
-    const { id } = req.query;
+    const { id } = req.params;
     const pendingProduct = await pendingProductModel.findById(id);
 
     if (!pendingProduct) {
