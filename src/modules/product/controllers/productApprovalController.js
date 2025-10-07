@@ -14,14 +14,14 @@ export const approveProduct = async (req, res) => {
     if (!pendingProduct) {
       return res.status(404).json({ message: "Pending product not found" });
     }
-    //   let coverImageDoc = null;
-    // if (pendingProduct.coverImagePath) {
-    //   coverImageDoc = await imageModel.create({
-    //     name: "cover_" + pendingProduct.title,
-    //     path: pendingProduct.coverImagePath,
-    //   });
-    // }
-     const coverImage = await makeImage(pendingProduct.coverImagePath);
+      let coverImageDoc = null;
+    if (pendingProduct.coverImagePath) {
+      coverImageDoc = await imageModel.create({
+        name: "cover_" + pendingProduct.title,
+        path: pendingProduct.coverImagePath,
+      });
+    }
+    //  const coverImage = await makeImage(pendingProduct.coverImagePath);
 
     // ✅ 1) إنشاء المنتج في كولكشن products (بدون صور حالياً)
     const newProduct = await productModel.create({
@@ -31,7 +31,7 @@ export const approveProduct = async (req, res) => {
       description: pendingProduct.description,
       brand_id: pendingProduct.brand_id,
       subcategory_id: pendingProduct.subcategory_id,
-      cover_image: coverImage._id ,
+      cover_image:coverImageDoc ? coverImageDoc._id : null ,
     });
 
     // ✅ 3. إنشاء باقي الصور وربطها بالمنتج
