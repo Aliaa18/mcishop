@@ -84,7 +84,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
   const brand = await brandModel.findById(req.body.brand_id);
   const subcategory = await subcategoryModel.findById(req.body.subcategory_id);
   if (user.role?.toUpperCase() === "SEMIADMIN") {
-    const coverImagePath = req.files?.cover_image?.[0]?.path || "";
+    const coverImagePath = req.files?.cover?.[0]?.path || "";
     const imagePaths = req.files?.images?.map((file) => file.path) || [];
 
     const pendingData = {
@@ -94,7 +94,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
       createdBy: user._id,
     };
 
- const pendingProduct = await pendingProductModel.create(pendingData);
+    const pendingProduct = await pendingProductModel.create(pendingData);
 
     const approveUrl = `https://mcishop.vercel.app/api/v1/products/approve/${pendingProduct._id}`;
 const rejectUrl = `https://mcishop.vercel.app/api/v1/products/reject/${pendingProduct._id}`;
