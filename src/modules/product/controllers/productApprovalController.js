@@ -1,4 +1,5 @@
 import imageModel from "../../image/models/image.model.js";
+import { makeImage } from "../../image/utils/image.utils.js";
 import imageOnProductModel from "../models/imageOnProduct.js";
 import pendingProductModel from "../models/pendingProduct.model.js";
 import productModel from "../models/product.model.js";
