@@ -7,56 +7,60 @@ import product from "../models/product.model.js";
 
 // ✅ اعتماد المنتج (Approve)
 export const approveProduct = async (req, res) => {
- try {
-    const { id } = req.params;
-    const pendingProduct = await pendingProductModel.findById(id);
+  try {
+    const { pendingProductId } = req.params;
+    console.log('🟡 pendingProductId:', pendingProductId);
 
+    const pendingProduct = await pendingProductModel.findById(pendingProductId);
     if (!pendingProduct) {
-      return res.status(404).json({ message: "Pending product not found" });
+      console.log('❌ pendingProduct not found');
+      return res.status(404).json({ message: 'Pending product not found' });
     }
-    //   let coverImageDoc = null;
-    // if (pendingProduct.coverImagePath) {
-    //   coverImageDoc = await imageModel.create({
-    //     name: "cover_" + pendingProduct.title,
-    //     path: pendingProduct.coverImagePath,
-    //   });
-    // }
-     const coverImage = await makeImage(pendingProduct.coverImagePath);
 
-    // ✅ 1) إنشاء المنتج في كولكشن products (بدون صور حالياً)
-    const newProduct = await productModel.create({
+    console.log('✅ Found pendingProduct:', pendingProduct.title);
+
+    // ✅ Check if coverImagePath موجود
+    if (!pendingProduct.coverImagePath) {
+      console.log('⚠️ No coverImagePath found!');
+      return res.status(400).json({ message: 'Missing coverImagePath' });
+    }
+
+    // 🧩 إنشاء صورة الكوفر
+    const coverImage = await makeImage(pendingProduct.coverImagePath);
+    console.log('✅ Created coverImage:', coverImage);
+
+    // 🧩 إنشاء المنتج في الكولكشن الرئيسي
+    const product = await productModel.create({
       title: pendingProduct.title,
       price: pendingProduct.price,
       stock: pendingProduct.stock,
       description: pendingProduct.description,
       brand_id: pendingProduct.brand_id,
       subcategory_id: pendingProduct.subcategory_id,
-      cover_image: coverImage._id ,
+      category_id: pendingProduct.category_id,
+      apps: pendingProduct.apps,
+      cover_image: coverImage._id,
     });
 
-    // ✅ 3. إنشاء باقي الصور وربطها بالمنتج
-    if (pendingProduct.imagePaths && pendingProduct.imagePaths.length > 0) {
-      await Promise.all(
-        pendingProduct.imagePaths.map(async (imgPath) => {
-          const img = await imageModel.create({
-            name: "product_" + pendingProduct.title,
-            path: imgPath,
-          });
+    console.log('✅ Product created:', product._id);
 
-          await imageOnProductModel.create({
-            image_id: img._id,
-            product_id: newProduct._id,
-          });
-        })
-      );
+    // 🖼️ إضافة باقي الصور
+    if (pendingProduct.imagePaths?.length) {
+      for (const path of pendingProduct.imagePaths) {
+        const image = await makeImage(path);
+        await imageOnProductModel.create({
+          image_id: image._id,
+          product_id: product._id,
+        });
+      }
     }
 
-    // ✅ 4. حذف المنتج من pending بعد الموافقة
-    await pendingProductModel.findByIdAndDelete(id);
+    await pendingProductModel.findByIdAndDelete(pendingProductId);
+    console.log('🗑️ Pending product deleted');
 
-    res.status(200).json({
-      message: "✅ Product approved successfully",
-      product: newProduct,
+    res.status(201).json({
+      message: 'Product approved and moved successfully',
+      product,
     });
   } catch (error) {
     console.error("❌ Approve product error:", error);
