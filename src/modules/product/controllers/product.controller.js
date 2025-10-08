@@ -97,8 +97,8 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
        
     const pendingProduct = await pendingProductModel.create(pendingData);
 
-const approveUrl = `http://localhost:3002/#/approval/approve/${pendingProduct._id}`;
-const rejectUrl = `http://localhost:3002/#/approval/reject/${pendingProduct._id}`;
+const approveUrl = `http://localhost:3002/approval/approve/${pendingProduct._id}`;
+const rejectUrl = `http://localhost:3002/approval/reject/${pendingProduct._id}`;
 
 
     let attachments = [];
