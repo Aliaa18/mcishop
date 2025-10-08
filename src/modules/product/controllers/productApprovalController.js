@@ -38,7 +38,7 @@ export const approveProduct = async (req, res) => {
       features: pendingProduct.features,
       brand_id: pendingProduct.brand_id,
       subcategory_id: pendingProduct.subcategory_id,
-     category_id: categoryId,
+       category_id: categoryId ,
       cover_image: coverImageDoc?._id || null,
     });
 
