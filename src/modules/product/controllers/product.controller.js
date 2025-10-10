@@ -139,7 +139,7 @@ const rejectUrl = `https://mcishop.vercel.app/api/v1/products/reject/${pendingPr
     }
 
     const msg = {
-      to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
+      to: "aliaasultan75@gmail.com", // 📥 Your internal email (sales, admin, etc.)
       from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
       subject: "New Product Request",
       text: `A new .`,

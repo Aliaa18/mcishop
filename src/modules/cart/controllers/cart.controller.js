@@ -172,7 +172,7 @@ export const checkOutMail = catchAsyncError(async (req, res) => {
 
   // Compose the message
   const msg = {
-    to: process.env.EMAIL, // 📥 Your internal email (sales, admin, etc.)
+    to: "aliaasultan75@gmail.com", // 📥 Your internal email (sales, admin, etc.)
     from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
     subject: 'Cart Checkout Request',
     text: `Customer ${req.user.email} from "${cart.user_id.companyName}" company wants to make an order with these products: ${arr_ele.join(', ')}`,
