@@ -9,9 +9,8 @@ const transporter = nodemailer.createTransport({
 		user:"alaa.mohamed@mci-egypt.com",
 		pass:"jlzuohiawocevnuu",
 	},
-	tls: {
-    rejectUnauthorized: false, // مفيدة لو السيرفر مش موثّق بالكامل
-  },
+	logger: true,   // ✅ يطبع خطوات الإرسال
+  debug: true, 
 })
 
 export default transporter
