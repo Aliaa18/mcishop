@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node --watch index.js",
-    "dev": "node --enf-file=config/.env index.js",
+    "dev": "node --env-file=config/.env index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

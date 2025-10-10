@@ -2,16 +2,14 @@ import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 dotenv.config()
 const transporter = nodemailer.createTransport({
-     host: "smtp.office365.com",
-  port: 587,
-  secure: false,
+  host: "https://s1069.lon1.mysecurecloudhost.com",
+  port: 465,
+  secure: true,
 	auth: {
 		user:"alaa.mohamed@mci-egypt.com",
 		pass:"jlzuohiawocevnuu",
 	},
-	tls: {
-    ciphers: "SSLv3",
-  },
+	
 })
 
 export default transporter
