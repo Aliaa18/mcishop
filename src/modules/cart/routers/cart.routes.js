@@ -20,17 +20,17 @@ router.route('/all').get(authenticate, authorize(ROLES.ADMIN), assertCart, getCa
 router.route('/checkout').get(authenticate, authorize(ROLES.USER) , checkOutMail)
 router
 	.route('/add')
-	.put(authenticate, authorize(ROLES.USER), assertCart, addToCart)
+	.put(authenticate, assertCart, addToCart)
 router
 	.route('/update')
-	.put(authenticate, authorize(ROLES.USER), assertCart, updateCart)
+	.put(authenticate, assertCart, updateCart)
 router
 	.route('/remove')
-	.put(authenticate, authorize(ROLES.USER), assertCart, removeFromCart)
+	.put(authenticate, assertCart, removeFromCart)
 router
 	.route('/coupon')
-	.put(authenticate, authorize(ROLES.USER), assertCart, applyCoupon)
+	.put(authenticate, assertCart, applyCoupon)
 router
      .route('/clear')
-	 .delete(authenticate, authorize(ROLES.USER), assertCart, clearCart)
+	 .delete(authenticate, assertCart, clearCart)
 export default router
