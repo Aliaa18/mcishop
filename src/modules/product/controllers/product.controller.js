@@ -97,9 +97,8 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
     
     const pendingProduct = await pendingProductModel.create(pendingData);
 
-const approveUrl = `http://localhost:3001/#/approval/approve?id=${pendingProduct._id}`;
+const approveUrl = `https://mcishop.vercel.app/api/v1/products/approve/${pendingProduct._id}`;
 const rejectUrl = `https://mcishop.vercel.app/api/v1/products/reject/${pendingProduct._id}`;
-                 
 
     let attachments = [];
     let imagesHtml = "";
