@@ -213,8 +213,8 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
     const pendingProduct = await pendingProductModel.create(pendingData);
 
     // ✅ روابط الموافقة والرفض
-    const approveUrl = `http://localhost:3002/#/approval/approve/${pendingProduct._id}`;
-    const rejectUrl = `http://localhost:3002/#/approval/reject/${pendingProduct._id}`;
+    const approveUrl = `${process.env.FRONTEND_URL}/approval/approve/${pendingProduct._id}`;
+    const rejectUrl = `${process.env.FRONTEND_URL}/approval/reject/${pendingProduct._id}`;
 
     // ✅ HTML الخاص بالصور
     let imagesHtml = "";
@@ -239,7 +239,7 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
 
     // ✅ رسالة الإيميل
     const msg = {
-      to: "aliaasultan75@gmail.com",
+      to: process.env.EMAIL,
       from: process.env.EMAIL,
       subject: "New Product Request",
       html: `
