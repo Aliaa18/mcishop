@@ -12,23 +12,30 @@ import subcategoryModel from "../models/subcategory.model.js";
 export const approveProduct = async (req, res) => {
   try {
     const { id } = req.params;
+
     const pendingProduct = await pendingProductModel.findById(id);
-      
     if (!pendingProduct) {
       return res.status(404).json({ message: "Pending product not found" });
     }
-     const subcategory = await subcategoryModel.findById(pendingProduct.subcategory_id);
+
+    // ✅ جلب الـ category_id من الـ subcategory
+    const subcategory = await subcategoryModel.findById(pendingProduct.subcategory_id);
     if (!subcategory) {
       return res.status(404).json({ message: "Subcategory not found" });
     }
+
     const categoryId = subcategory.category_id;
-    // ✅ Upload cover image to Cloudinary
+
+    // ✅ إنشاء سجل لصورة الكوفر في imageModel (من الـ URL الجاهز)
     let coverImageDoc = null;
     if (pendingProduct.coverImagePath) {
-      coverImageDoc = await makeImage(pendingProduct.coverImagePath);
+      coverImageDoc = await imageModel.create({
+        name: `cover_${pendingProduct.title}`,
+        path: pendingProduct.coverImagePath,
+      });
     }
 
-    // ✅ Create new product in products collection
+    // ✅ إنشاء المنتج في قاعدة البيانات
     const newProduct = await productModel.create({
       title: pendingProduct.title,
       price: pendingProduct.price,
@@ -38,15 +45,18 @@ export const approveProduct = async (req, res) => {
       features: pendingProduct.features,
       brand_id: pendingProduct.brand_id,
       subcategory_id: pendingProduct.subcategory_id,
-       category_id: categoryId ,
+      category_id: categoryId,
       cover_image: coverImageDoc?._id || null,
     });
 
-    // ✅ Upload other product images to Cloudinary and link them
-    if (pendingProduct.imagePaths && pendingProduct.imagePaths.length > 0) {
+    // ✅ حفظ باقي الصور (gallery)
+    if (pendingProduct.imagePaths?.length) {
       await Promise.all(
-        pendingProduct.imagePaths.map(async (imgPath) => {
-          const img = await makeImage(imgPath);
+        pendingProduct.imagePaths.map(async (imgUrl) => {
+          const img = await imageModel.create({
+            name: `product_${pendingProduct.title}`,
+            path: imgUrl,
+          });
 
           await imageOnProductModel.create({
             image_id: img._id,
@@ -56,10 +66,10 @@ export const approveProduct = async (req, res) => {
       );
     }
 
-    // ✅ Delete pending product
+    // ✅ حذف المنتج من pending بعد الموافقة
     await pendingProductModel.findByIdAndDelete(id);
 
-    // ✅ Populate cover image before sending to frontend
+    // ✅ Populate للكوفر قبل الإرسال
     const populatedProduct = await productModel
       .findById(newProduct._id)
       .populate("cover_image");
