@@ -15,9 +15,9 @@ import { assertCart } from '../middlewares/cart.middleware.js'
 
 const router = Router()
 
-router.route('/').get(authenticate, authorize(ROLES.USER), assertCart, getCart)
-router.route('/all').get(authenticate, authorize(ROLES.ADMIN), assertCart, getCarts)
-router.route('/checkout').get(authenticate, authorize(ROLES.USER) , checkOutMail)
+router.route('/').get(authenticate, assertCart, getCart)
+router.route('/all').get(authenticate, assertCart, getCarts)
+router.route('/checkout').get(authenticate , checkOutMail)
 router
 	.route('/add')
 	.put(authenticate, assertCart, addToCart)
