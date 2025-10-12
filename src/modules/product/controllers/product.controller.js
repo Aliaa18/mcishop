@@ -85,104 +85,200 @@ export const addProductWithImages = catchAsyncError(async (req, res, next) => {
   const brand = await brandModel.findById(req.body.brand_id);
   const subcategory = await subcategoryModel.findById(req.body.subcategory_id);
   if (user.role?.toUpperCase() === "SEMIADMIN") {
-    const coverImagePath = req.files?.cover_image?.[0]?.path || "";
-    const imagePaths = req.files?.images?.map((file) => file.path) || [];
+//     const coverImagePath = req.files?.cover_image?.[0]?.path || "";
+//     const imagePaths = req.files?.images?.map((file) => file.path) || [];
 
-    const pendingData = {
-      ...req.body,
-      coverImagePath,
-      imagePaths,
-      createdBy: user._id,
-    };
+//     const pendingData = {
+//       ...req.body,
+//       coverImagePath,
+//       imagePaths,
+//       createdBy: user._id,
+//     };
     
-    const pendingProduct = await pendingProductModel.create(pendingData);
+//     const pendingProduct = await pendingProductModel.create(pendingData);
 
-const approveUrl = `http://localhost:3002/#/approval/approve/${pendingProduct._id}`;
-const rejectUrl = `http://localhost:3002/#/approval/reject/${pendingProduct._id}`;
+// const approveUrl = `http://localhost:3002/#/approval/approve/${pendingProduct._id}`;
+// const rejectUrl = `http://localhost:3002/#/approval/reject/${pendingProduct._id}`;
 
 
-    let attachments = [];
-    let imagesHtml = "";
+//     let attachments = [];
+//     let imagesHtml = "";
 
-    if (req.files?.cover_image?.[0]) {
-      attachments.push({
-        filename: req.files.cover_image[0].originalname,
-        path: req.files.cover_image[0].path,
-        cid: "coverImage", // لازم يبقى ثابت عشان نستدعيه في الـ HTML
-      });
+//     if (req.files?.cover_image?.[0]) {
+//       attachments.push({
+//         filename: req.files.cover_image[0].originalname,
+//         path: req.files.cover_image[0].path,
+//         cid: "coverImage", // لازم يبقى ثابت عشان نستدعيه في الـ HTML
+//       });
 
-      imagesHtml += `
-      <h3>Cover Image:</h3>
-      <img src="cid:coverImage" width="250" style="margin:5px;" />
-    `;
-    }
+//       imagesHtml += `
+//       <h3>Cover Image:</h3>
+//       <img src="cid:coverImage" width="250" style="margin:5px;" />
+//     `;
+//     }
 
-    // ✅ باقي الصور
-    if (req.files?.images) {
-      attachments.push(
-        ...req.files.images.map((file, index) => ({
-          filename: file.originalname,
-          path: file.path,
-          cid: `productImage${index}`,
-        }))
-      );
+//     // ✅ باقي الصور
+//     if (req.files?.images) {
+//       attachments.push(
+//         ...req.files.images.map((file, index) => ({
+//           filename: file.originalname,
+//           path: file.path,
+//           cid: `productImage${index}`,
+//         }))
+//       );
 
-      imagesHtml += `
-      <h3>Product Images:</h3>
-      ${req.files.images
-        .map(
-          (file, index) =>
-            `<img src="cid:productImage${index}" width="200" style="margin:5px;" />`
-        )
-        .join("")}
-    `;
-    }
+//       imagesHtml += `
+//       <h3>Product Images:</h3>
+//       ${req.files.images
+//         .map(
+//           (file, index) =>
+//             `<img src="cid:productImage${index}" width="200" style="margin:5px;" />`
+//         )
+//         .join("")}
+//     `;
+//     }
 
-    const msg = {
-      to: "aliaasultan75@gmail.com", // 📥 Your internal email (sales, admin, etc.)
-      from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
-      subject: "New Product Request",
-      text: `A new .`,
-      html: `
-			<h2>New Product Request</h2>
-    <p>User <strong>${user.email}</strong> requested to add a product.</p>
-    <h3>Product Details:</h3>
-    <ul>
-      <li><strong>Title: </strong> ${req.body.title}</li>
-      <li><strong>Price: </strong> ${req.body.price}</li>
-      <li><strong>Stock: </strong> ${req.body.stock || ""}</li>
-      <li><strong>Brand: </strong> ${brand ? brand.name : "unknown"}</li>
-      <li><strong>Subcategory: </strong> ${
-        subcategory ? subcategory.name : "unknown"
-      }</li>
-      <li><strong>Description: </strong> ${req.body.description || ""}</li>
-      <li><strong>Applications: </strong> ${req.body.apps || ""}</li>
-      <li><strong>Features: </strong> ${req.body.features || ""}</li>
-    </ul>
+//     const msg = {
+//       to: "aliaasultan75@gmail.com", // 📥 Your internal email (sales, admin, etc.)
+//       from: process.env.EMAIL, // 📤 Sender (same if you're using one verified domain/email)
+//       subject: "New Product Request",
+//       text: `A new .`,
+//       html: `
+// 			<h2>New Product Request</h2>
+//     <p>User <strong>${user.email}</strong> requested to add a product.</p>
+//     <h3>Product Details:</h3>
+//     <ul>
+//       <li><strong>Title: </strong> ${req.body.title}</li>
+//       <li><strong>Price: </strong> ${req.body.price}</li>
+//       <li><strong>Stock: </strong> ${req.body.stock || ""}</li>
+//       <li><strong>Brand: </strong> ${brand ? brand.name : "unknown"}</li>
+//       <li><strong>Subcategory: </strong> ${
+//         subcategory ? subcategory.name : "unknown"
+//       }</li>
+//       <li><strong>Description: </strong> ${req.body.description || ""}</li>
+//       <li><strong>Applications: </strong> ${req.body.apps || ""}</li>
+//       <li><strong>Features: </strong> ${req.body.features || ""}</li>
+//     </ul>
 
 			
+//         ${imagesHtml || "<p>No images provided</p>"}
+
+
+// 		<br/><br/>
+// <a href="${approveUrl}" 
+//    style="background:green;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">Approve</a>
+// <a href="${rejectUrl}" 
+//    style="background:red;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">Reject</a>
+
+// 		`,
+//       attachments,
+//     };
+//     try {
+//       let info = await transporter.sendMail(msg);
+//       console.log("Message sent: %s", info.messageId);
+//     } catch (err) {
+//       console.error("Error sending email:", err);
+//     }
+//     return res.status(200).json({
+//       message: "The Request sended to the admin ",
+//     });
+  let coverImageUrl = "";
+    let imageUrls = [];
+
+    // ✅ رفع صورة الكوفر
+    if (req.files?.cover_image?.[0]) {
+      const uploaded = await uploadImage(req.files.cover_image[0].path);
+      coverImageUrl = uploaded.imageUrl;
+    }
+
+    // ✅ رفع باقي الصور
+    if (req.files?.images?.length) {
+      imageUrls = await Promise.all(
+        req.files.images.map(async (img) => {
+          const uploaded = await uploadImage(img.path);
+          return uploaded.imageUrl;
+        })
+      );
+    }
+
+    // ✅ حفظ البيانات في الـ Pending model
+    const pendingData = {
+      ...req.body,
+      coverImagePath: coverImageUrl,
+      imagePaths: imageUrls,
+      createdBy: user._id,
+    };
+
+    const pendingProduct = await pendingProductModel.create(pendingData);
+
+    // ✅ روابط الموافقة والرفض
+    const approveUrl = `http://localhost:3002/#/approval/approve/${pendingProduct._id}`;
+    const rejectUrl = `http://localhost:3002/#/approval/reject/${pendingProduct._id}`;
+
+    // ✅ HTML الخاص بالصور
+    let imagesHtml = "";
+    if (coverImageUrl) {
+      imagesHtml += `
+        <h3>Cover Image:</h3>
+        <img src="${coverImageUrl}" width="250" style="margin:5px; border-radius:8px;"/>
+      `;
+    }
+
+    if (imageUrls.length > 0) {
+      imagesHtml += `
+        <h3>Product Images:</h3>
+        ${imageUrls
+          .map(
+            (url) =>
+              `<img src="${url}" width="200" style="margin:5px; border-radius:8px;"/>`
+          )
+          .join("")}
+      `;
+    }
+
+    // ✅ رسالة الإيميل
+    const msg = {
+      to: "aliaasultan75@gmail.com",
+      from: process.env.EMAIL,
+      subject: "New Product Request",
+      html: `
+        <h2>🛍️ New Product Request</h2>
+        <p>User <strong>${user.email}</strong> requested to add a product.</p>
+
+        <h3>Product Details:</h3>
+        <ul>
+          <li><strong>Title:</strong> ${req.body.title}</li>
+          <li><strong>Price:</strong> ${req.body.price}</li>
+          <li><strong>Stock:</strong> ${req.body.stock || ""}</li>
+          <li><strong>Brand:</strong> ${req.body.brand_id || "unknown"}</li>
+          <li><strong>Subcategory:</strong> ${req.body.subcategory_id || "unknown"}</li>
+          <li><strong>Description:</strong> ${req.body.description || ""}</li>
+          <li><strong>Applications:</strong> ${req.body.apps || ""}</li>
+          <li><strong>Features:</strong> ${req.body.features || ""}</li>
+        </ul>
+
         ${imagesHtml || "<p>No images provided</p>"}
 
-
-		<br/><br/>
-<a href="${approveUrl}" 
-   style="background:green;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">Approve</a>
-<a href="${rejectUrl}" 
-   style="background:red;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">Reject</a>
-
-		`,
-      attachments,
+        <br/><br/>
+        <a href="${approveUrl}" 
+          style="background:green;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">
+          ✅ Approve
+        </a>
+        <a href="${rejectUrl}" 
+          style="background:red;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;margin-left:10px;">
+          ❌ Reject
+        </a>
+      `,
     };
-    try {
-      let info = await transporter.sendMail(msg);
-      console.log("Message sent: %s", info.messageId);
-    } catch (err) {
-      console.error("Error sending email:", err);
-    }
+
+    // ✅ إرسال الإيميل
+    await transporter.sendMail(msg);
+
     return res.status(200).json({
-      message: "The Request sended to the admin ",
-    });
-  }
+      message: "✅ The request was sent to the admin",
+    })
+}
+
   return res.status(201).json({
     message: `none`,
   });
