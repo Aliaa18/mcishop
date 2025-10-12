@@ -9,6 +9,7 @@ import imageOnProductModel from "../models/imageOnProduct.js";
 import productModel from "../models/product.model.js";
 import subcategoryModel from "../models/subcategory.model.js";
 import  pendingProductModel  from "../models/pendingProduct.model.js";
+import { uploadImage } from "../../../utils/image.js";
 dotenv.config();
 export const getProducts = catchAsyncError(async (req, res, next) => {
   const apiFeature = new ApiFeatures(productModel.find(), req.query)
