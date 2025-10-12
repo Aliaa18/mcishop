@@ -19,8 +19,8 @@ import reviewRouter from './review.routes.js'
 import { authenticate } from '../../auth/auth.middlewares.js'
 import { approveProduct , rejectProduct } from '../controllers/productApprovalController.js'
 const router = Router()
-  router.route("/approve/:id").get(approveProduct);
-router.route("/reject/:id").get(rejectProduct);
+  router.route("/approve/:id").post(approveProduct);
+router.route("/reject/:id").post(rejectProduct);
 router
 	.route('/')
 	.get(getProducts)
